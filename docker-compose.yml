@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: thor_web_app_be
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "5000:5000"
+    tty: true
+    environment:
+      FLASK_APP: /usr/src/app/thor-web-app-be/app.py
+      FLASK_ENV: development
+    command: flask run -h 0.0.0.0 --debug --reload
