@@ -11,6 +11,7 @@ custom:
 provider:
   name: aws
   runtime: python3.9
+  region: ap-northeast-1
 
 functions:
   api:
@@ -18,10 +19,14 @@ functions:
     events:
       - http:
           path: /
-          method: ANY
-      - http:
-          path: /{proxy+}
-          method: ANY
+          method: post
+
+resources:
+  Resources:
+    UploadBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: "thor-upload-tmp-data"
 
 plugins:
   - serverless-wsgi

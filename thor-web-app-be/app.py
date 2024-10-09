@@ -1,18 +1,44 @@
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify, request
+import boto3
+import uuid
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# s3のバケット名
+bucket_name = os.environ['AWS_S3_BUCKET_NAME']
+
+# s3のクライアントを作成
+s3 = boto3.client('s3')
 
 app = Flask(__name__)
 
 
-@app.route("/")
-def hello_from_root():
-    return jsonify(message='Hello from root!')
+# POSTリクエスト
+@app.route("/", methods=['POST'])
+def main():
+    # リクエストにファイルが含まれているか確認
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part in the request"}), 400
 
+    # ファイルの取得
+    file = request.files['file']
 
-@app.route("/hello")
-def hello():
-    return jsonify(message='Hello from path!')
+    # ファイル名が空か確認
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
 
+    # ファイルのアップロード処理
+    try:
+        # s3へのディレクトリの作成
+        tmp_dir = str(uuid.uuid4())
+        save_path = tmp_dir + "/" + file.filename
 
-@app.errorhandler(404)
-def resource_not_found(e):
-    return make_response(jsonify(error='Not found!'), 404)
+        # s3へのアップロード処理
+        s3.upload_fileobj(file, bucket_name, save_path)
+        return jsonify(message='File uploaded successfully : ' + save_path), 200
+
+    except Exception as e:
+        # エラーが発生した場合はエラーメッセージを返す
+        return jsonify({"error": str(e)}), 500
