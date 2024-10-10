@@ -4,6 +4,7 @@ import uuid
 import os
 from dotenv import load_dotenv
 
+# envファイルの読み込み
 load_dotenv()
 
 # s3のバケット名
@@ -12,10 +13,11 @@ bucket_name = os.environ['AWS_S3_BUCKET_NAME']
 # s3のクライアントを作成
 s3 = boto3.client('s3')
 
+# FlaskのWebアプリ作成
 app = Flask(__name__)
 
 
-# POSTリクエスト
+# POSTリクエストとエンドポイントの設定
 @app.route("/", methods=['POST'])
 def main():
     # リクエストにファイルが含まれているか確認
