@@ -2,3 +2,4 @@ Flask==3.0.3
 boto3
 pandas
 numpy
+python-dotenv
