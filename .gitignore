@@ -6,3 +6,5 @@ __pycache__/
 .DS_Store
 
 .serverless
+
+./thor-web-app-be/src/tmp/
