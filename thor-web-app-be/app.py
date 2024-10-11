@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 import uuid
 import json
-from src.s3_functions import uploadS3
+from src.s3_functions import uploadS3, unzipS3
 
 # FlaskのWebアプリ作成
 app = Flask(__name__)
@@ -45,12 +45,20 @@ def analyze():
     # リクエストボディからUUIDを取得
     request_body = request.json
     UUID = request_body.get('UUID')
+    file_name = request_body.get('file_name')
 
     # UUIDが指定されていない場合はエラーを返す
     if not UUID:
         return jsonify({"error": "UUID parameter is required"}), 400
+    # ファイル名が指定されていない場合はエラーを返す
+    if not file_name:
+        return jsonify({"error": "file_name parameter is required"}), 400
 
-    print(UUID)
+    # s3からファイルを取得して解凍
+    success, error_message, export_zip = unzipS3(UUID, file_name)
+    if not success:
+        return {"status": "failed", "error_message": error_message}
+
     # 解析処理
     # ここに解析処理を追加する
 
