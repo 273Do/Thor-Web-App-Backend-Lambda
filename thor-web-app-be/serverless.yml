@@ -18,7 +18,7 @@ functions:
     handler: wsgi_handler.handler
     events:
       - http:
-          path: /
+          path: /{proxy+}
           method: post
 
 resources:
