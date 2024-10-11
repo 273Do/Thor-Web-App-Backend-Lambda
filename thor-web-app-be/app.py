@@ -7,28 +7,23 @@ from src.s3_functions import uploadS3
 app = Flask(__name__)
 
 
-# POSTリクエストとエンドポイントの設定
-@app.route("/get_presigned_url", methods=['POST'])
+# GETリクエストとエンドポイントの設定
+@app.route("/get_presigned_url", methods=['GET'])
 def main():
 
-    # リクエストにファイルが含まれているか確認
-    if 'file' not in request.files:
-        return jsonify({"error": "No file part in the request"}), 400
-
-    # ファイルの取得
-    file_name = request.files['file']
-    # ファイル名が空か確認
-    if file_name.filename == '':
-        return jsonify({"error": "No selected file"}), 400
+    # クエリパラメータからファイル名を取得
+    file_name = request.args.get('file_name')
+    if not file_name:
+        return jsonify({"error": "file_name parameter is required"}), 400
 
     # 一時ファイル名を生成
     UUID = str(uuid.uuid4())  # uuidを生成
-    tmp_file = f"{UUID}/{file_name.filename}"
+    tmp_file = f"{UUID}/{file_name}"
 
     # s3のプリサインドurlの発行
     success, error_message, presigned_url = uploadS3(tmp_file)
     if success:
-        print(presigned_url)
+        # print(presigned_url)
         return jsonify({
             'message': 'successfully',
             'body': json.dumps(

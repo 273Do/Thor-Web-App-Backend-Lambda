@@ -9,7 +9,7 @@ load_dotenv()
 # s3のバケット名
 bucket_name = os.environ['AWS_S3_BUCKET_NAME']
 
-# プリサインドURLの有効期間
+# プリサインドurlの有効期間
 duration_seconds = int(os.environ['DURATION_SECONDS'])
 
 # リージョンの設定
@@ -37,3 +37,8 @@ def uploadS3(save_path):
         return True, None, presigned_url
     except Exception as e:
         return False, str(e), None
+
+
+# s3にアップロードされたzipファイルを取得して解凍する処理
+def unzipS3():
+    print("unzipS3")
