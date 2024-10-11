@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, request
 import uuid
 import json
-from src.s3_functions import uploadS3, unzipS3
+from src.s3_functions import uploadS3, get_fromS3
+from src.unzip import unzip
 
 # FlaskのWebアプリ作成
 app = Flask(__name__)
@@ -54,8 +55,14 @@ def analyze():
     if not file_name:
         return jsonify({"error": "file_name parameter is required"}), 400
 
-    # s3からファイルを取得して解凍
-    success, error_message, export_zip = unzipS3(UUID, file_name)
+    # メイン処理
+    # s3からファイルを取得
+    success, error_message, zip_file = get_fromS3(UUID, file_name)
+    if not success:
+        return {"status": "failed", "error_message": error_message}
+
+    # zipファイルを解凍
+    success, error_message, export_zip = unzip(zip_file)
     if not success:
         return {"status": "failed", "error_message": error_message}
 
