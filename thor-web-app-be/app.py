@@ -7,12 +7,14 @@ from src.s3_functions import uploadS3
 app = Flask(__name__)
 
 
-# GETリクエストとエンドポイントの設定
+# 署名付きurlを発行するエンドポイント
 @app.route("/get_presigned_url", methods=['GET'])
-def main():
+def get_presigned_url():
 
     # クエリパラメータからファイル名を取得
     file_name = request.args.get('file_name')
+
+    # ファイル名が指定されていない場合はエラーを返す
     if not file_name:
         return jsonify({"error": "file_name parameter is required"}), 400
 
@@ -23,7 +25,7 @@ def main():
     # s3のプリサインドurlの発行
     success, error_message, presigned_url = uploadS3(tmp_file)
     if success:
-        # print(presigned_url)
+        print(presigned_url)
         return jsonify({
             'message': 'successfully',
             'body': json.dumps(
@@ -34,3 +36,27 @@ def main():
             )}), 200
     else:
         return {"status": "failed", "error_message": error_message}, 500
+
+
+# 解析処理をするエンドポイント
+@app.route("/analyze", methods=['POST'])
+def analyze():
+
+    # リクエストボディからUUIDを取得
+    request_body = request.json
+    UUID = request_body.get('UUID')
+
+    # UUIDが指定されていない場合はエラーを返す
+    if not UUID:
+        return jsonify({"error": "UUID parameter is required"}), 400
+
+    print(UUID)
+    # 解析処理
+    # ここに解析処理を追加する
+
+    return jsonify({'message': 'successfully',
+                    'body': json.dumps(
+                        {
+                            'UUID': UUID
+                        }
+                    )}), 200
