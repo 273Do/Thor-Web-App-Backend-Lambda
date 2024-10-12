@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 import uuid
 import json
-from src.s3_functions import uploadS3, get_fromS3
+from src.s3_functions import issue_presigned_url, get_fromS3
 from src.unzip import unzip
 
 # FlaskのWebアプリ作成
@@ -24,7 +24,7 @@ def get_presigned_url():
     tmp_file = f"{UUID}/{file_name}"
 
     # s3のプリサインドurlの発行
-    success, error_message, presigned_url = uploadS3(tmp_file)
+    success, error_message, presigned_url = issue_presigned_url(tmp_file)
     if success:
         print(presigned_url)
         return jsonify({
@@ -62,7 +62,8 @@ def analyze():
         return {"status": "failed", "error_message": error_message}
 
     # zipファイルを解凍
-    success, error_message, export_zip = unzip(zip_file)
+    success, error_message, export_xml = unzip(zip_file)
+    print(export_xml)
     if not success:
         return {"status": "failed", "error_message": error_message}
 

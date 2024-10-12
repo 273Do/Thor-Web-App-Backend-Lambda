@@ -22,7 +22,7 @@ s3 = boto3.client('s3', region_name=region,
 # s3のプリサインドurlの発行処理
 
 
-def uploadS3(tmp_file):
+def issue_presigned_url(tmp_file):
     try:
         presigned_url = s3.generate_presigned_url(
             ClientMethod='put_object',
@@ -49,8 +49,6 @@ def get_fromS3(UUID, file_name):
 
         # s3に格納されているデータのディレクトリを指定
         file_dir = f"{UUID}/{file_name}"
-
-        print("file_dir", file_dir)
 
         # s3からzipファイルを取得
         s3_object = s3.get_object(Bucket=bucket_name, Key=file_dir)
