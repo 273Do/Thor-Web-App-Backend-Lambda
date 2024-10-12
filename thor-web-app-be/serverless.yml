@@ -19,7 +19,7 @@ functions:
     events:
       - http:
           path: /{proxy+}
-          method: post
+          method: any
 
 resources:
   Resources:

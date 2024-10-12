@@ -9,7 +9,7 @@ load_dotenv()
 # s3のバケット名
 bucket_name = os.environ['AWS_S3_BUCKET_NAME']
 
-# プリサインドURLの有効期間
+# プリサインドurlの有効期間
 duration_seconds = int(os.environ['DURATION_SECONDS'])
 
 # リージョンの設定
@@ -22,18 +22,34 @@ s3 = boto3.client('s3', region_name=region,
 # s3のプリサインドurlの発行処理
 
 
-def uploadS3(save_path):
+def issue_presigned_url(tmp_file):
     try:
+        # プリサインドurlの発行
         presigned_url = s3.generate_presigned_url(
             ClientMethod='put_object',
             Params={
                 'Bucket': bucket_name,
-                'Key': save_path,
+                'Key': tmp_file,
                 'ContentType': 'application/zip'
             },
             ExpiresIn=duration_seconds,
             HttpMethod='PUT'
         )
+
         return True, None, presigned_url
+    except Exception as e:
+        return False, str(e), None
+
+
+# s3にアップロードされたzipファイルを取得
+
+
+def get_fromS3(file_dir):
+    try:
+        # s3からzipファイルを取得
+        s3_object = s3.get_object(Bucket=bucket_name, Key=file_dir)
+        zip_file = s3_object['Body'].read()
+
+        return True, None, zip_file
     except Exception as e:
         return False, str(e), None
