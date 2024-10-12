@@ -3,6 +3,7 @@ import uuid
 import json
 from src.s3_functions import issue_presigned_url, get_fromS3
 from src.unzip import unzip
+from src.extract_data import extract_data
 
 # FlaskのWebアプリ作成
 app = Flask(__name__)
@@ -66,6 +67,11 @@ def analyze():
     # zipファイルを解凍
     success, error_message, export_xml = unzip(zip_file)
     print(export_xml)
+    if not success:
+        return {"status": "failed", "error_message": error_message}
+
+    # データの抽出
+    success, error_message = extract_data(export_xml)
     if not success:
         return {"status": "failed", "error_message": error_message}
 
