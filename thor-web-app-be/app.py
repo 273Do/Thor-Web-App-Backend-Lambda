@@ -47,6 +47,8 @@ def analyze():
     request_body = request.json
     UUID = request_body.get('UUID')
     file_name = request_body.get('file_name')
+    # s3に格納されているデータのディレクトリを指定
+    file_dir = f"{UUID}/{file_name}"
 
     # UUIDが指定されていない場合はエラーを返す
     if not UUID:
@@ -57,7 +59,7 @@ def analyze():
 
     # メイン処理
     # s3からファイルを取得
-    success, error_message, zip_file = get_fromS3(UUID, file_name)
+    success, error_message, zip_file = get_fromS3(file_dir)
     if not success:
         return {"status": "failed", "error_message": error_message}
 
