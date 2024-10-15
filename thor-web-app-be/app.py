@@ -66,12 +66,12 @@ def analyze():
 
     # zipファイルを解凍
     success, error_message, export_xml = unzip(zip_file)
-    print(export_xml)
     if not success:
         return {"status": "failed", "error_message": error_message}
 
     # データの抽出
-    success, error_message = extract_data(export_xml)
+    success, error_message, step_count_df, sleep_analysis_df = extract_data(
+        export_xml)
     if not success:
         return {"status": "failed", "error_message": error_message}
 
