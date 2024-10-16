@@ -62,12 +62,12 @@ def analyze():
     # s3からファイルを取得
     success, error_message, zip_file = get_fromS3(file_dir)
     if not success:
-        return {"status": "failed", "error_message": error_message}
+        return {"status": "failed", "error_message": error_message}, 500
 
     # zipファイルを解凍
     success, error_message, export_xml = unzip(zip_file)
     if not success:
-        return {"status": "failed", "error_message": error_message}
+        return {"status": "failed", "error_message": error_message}, 500
 
     # 3からファイルを削除
     # ここに削除処理を追加する
@@ -76,7 +76,7 @@ def analyze():
     success, error_message, step_count_df, sleep_analysis_df = extract_data(
         export_xml)
     if not success:
-        return {"status": "failed", "error_message": error_message}
+        return {"status": "failed", "error_message": error_message}, 500
     else:
         print(step_count_df.info())
         print(step_count_df.head())
