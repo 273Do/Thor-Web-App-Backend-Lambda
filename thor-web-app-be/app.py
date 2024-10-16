@@ -69,11 +69,23 @@ def analyze():
     if not success:
         return {"status": "failed", "error_message": error_message}
 
+    # 3からファイルを削除
+    # ここに削除処理を追加する
+
     # データの抽出
     success, error_message, step_count_df, sleep_analysis_df = extract_data(
         export_xml)
     if not success:
         return {"status": "failed", "error_message": error_message}
+    else:
+        print(step_count_df.info())
+        print(step_count_df.head())
+        print(step_count_df.tail())
+        print('----------------------')
+        print(sleep_analysis_df.info())
+        print(sleep_analysis_df.head())
+        print(sleep_analysis_df.tail())
+        print('データの抽出が完了しました')
 
     # 解析処理
     # ここに解析処理を追加する
