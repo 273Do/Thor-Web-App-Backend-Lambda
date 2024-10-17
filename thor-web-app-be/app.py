@@ -3,6 +3,7 @@ import uuid
 import json
 from src.s3_functions import issue_presigned_url, get_fromS3
 from src.unzip import unzip
+from src.extract_data import extract_data
 
 # FlaskのWebアプリ作成
 app = Flask(__name__)
@@ -61,13 +62,30 @@ def analyze():
     # s3からファイルを取得
     success, error_message, zip_file = get_fromS3(file_dir)
     if not success:
-        return {"status": "failed", "error_message": error_message}
+        return {"status": "failed", "error_message": error_message}, 500
 
     # zipファイルを解凍
     success, error_message, export_xml = unzip(zip_file)
-    print(export_xml)
     if not success:
-        return {"status": "failed", "error_message": error_message}
+        return {"status": "failed", "error_message": error_message}, 500
+
+    # 3からファイルを削除
+    # ここに削除処理を追加する
+
+    # データの抽出
+    success, error_message, step_count_df, sleep_analysis_df = extract_data(
+        export_xml)
+    if not success:
+        return {"status": "failed", "error_message": error_message}, 500
+    else:
+        print(step_count_df.info())
+        print(step_count_df.head())
+        print(step_count_df.tail())
+        print('----------------------')
+        print(sleep_analysis_df.info())
+        print(sleep_analysis_df.head())
+        print(sleep_analysis_df.tail())
+        print('データの抽出が完了しました')
 
     # 解析処理
     # ここに解析処理を追加する
