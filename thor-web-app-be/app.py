@@ -4,6 +4,7 @@ import json
 from src.s3_functions import issue_presigned_url, get_fromS3
 from src.unzip import unzip
 from src.extract_data import extract_data
+from src.analysis.main import data_analyze
 
 # FlaskのWebアプリ作成
 app = Flask(__name__)
@@ -27,7 +28,6 @@ def get_presigned_url():
     # s3のプリサインドurlの発行
     success, error_message, presigned_url = issue_presigned_url(tmp_file)
     if success:
-        print(presigned_url)
         return jsonify({
             'message': 'successfully',
             'body': json.dumps(
@@ -77,18 +77,14 @@ def analyze():
         export_xml)
     if not success:
         return {"status": "failed", "error_message": error_message}, 500
-    else:
-        print(step_count_df.info())
-        print(step_count_df.head())
-        print(step_count_df.tail())
-        print('----------------------')
-        print(sleep_analysis_df.info())
-        print(sleep_analysis_df.head())
-        print(sleep_analysis_df.tail())
-        print('データの抽出が完了しました')
 
     # 解析処理
-    # ここに解析処理を追加する
+    success, error_message, analysis_results = data_analyze(
+        step_count_df, sleep_analysis_df)
+    if not success:
+        return {"status": "failed", "error_message": error_message}, 500
+    else:
+        print(analysis_results)
 
     return jsonify({'message': 'successfully',
                     'body': json.dumps(
