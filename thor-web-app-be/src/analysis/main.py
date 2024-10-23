@@ -14,7 +14,11 @@ def data_analyze(step_count_df, sleep_analysis_df):
         df['endDate'] = pd.to_datetime(df['endDate'])
 
     # 歩数データを直近3ヶ月間に絞る
-    narrow_the_data(step_count_df, 3)
+    step_count_df = narrow_the_data(step_count_df, 3)
+
+    print(step_count_df.head())
+    print(step_count_df.tail())
+
     # narrow_the_data(sleep_analysis_df, 3)
 
     return True, None, None
