@@ -121,6 +121,7 @@ def format_value(value, datatype):
 FIELDS = {
     'Record': OrderedDict((
         ('sourceVersion', 's'),
+        ('device', 's'),
         ('startDate', 'd'),
         ('endDate', 'd'),
         ('value', 'n'),

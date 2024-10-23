@@ -45,7 +45,7 @@ sa_df = pd.read_csv(
 #     './thor-web-app-be/src/analysis/test/SleepAnalysisCP.csv', low_memory=False)
 
 # 必要な列だけを抽出する
-sc_df = sc_df[["sourceVersion", "startDate", "endDate", "value"]]
-sa_df = sa_df[["sourceVersion", "startDate", "endDate", "value"]]
+sc_df = sc_df[["sourceVersion", "device", "startDate", "endDate", "value"]]
+sa_df = sa_df[["sourceVersion", "device", "startDate", "endDate", "value"]]
 
 data_analyze(sc_df, sa_df)
