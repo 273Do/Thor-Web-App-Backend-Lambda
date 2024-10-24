@@ -24,6 +24,11 @@ def data_analyze(step_count_df, sleep_analysis_df):
     step_count_df = filter_data(step_count_df, "step")
     sleep_analysis_df = filter_data(sleep_analysis_df, "sleep")
 
+    # 正解データがあるかどうかのフラグ
+    hasActSleep = True
+    if sleep_analysis_df.empty:
+        hasActSleep = False
+
     # 歩数のクラスタリング処理
     step_count_df, cluster_stats = clustering(step_count_df)
 
@@ -31,6 +36,7 @@ def data_analyze(step_count_df, sleep_analysis_df):
     print(step_count_df.shape)
     print(sleep_analysis_df.columns)
     print(sleep_analysis_df.shape)
+    print(hasActSleep)
     print(cluster_stats)
 
     return True, None, None
