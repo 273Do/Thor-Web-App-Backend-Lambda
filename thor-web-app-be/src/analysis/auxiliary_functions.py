@@ -21,6 +21,7 @@ def narrow_the_data(df, months):
 
     return narrow_df
 
+
 # 抽出対象を指定してフィルタリングする関数
 
 
@@ -34,5 +35,9 @@ def filter_data(df, target):
         # MEMO: WatchOS 10以降のデータのみを抽出
         filter_df = df[(df["sourceVersion"].str.contains("10")) & (
             df["value"] == "HKCategoryValueSleepAnalysisInBed")]
+
+    # device列を削除
+    filter_df['device'] = filter_df['device'].astype(str)
+    filter_df = filter_df.drop("device", axis=1)
 
     return filter_df

@@ -3,5 +3,7 @@ boto3
 botocore
 # pandas
 # numpy
+# scikit-learn
+
 python-dotenv
 python-dateutil
