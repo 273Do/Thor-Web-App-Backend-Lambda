@@ -34,6 +34,6 @@ def clustering(df):
         )
 
     # csvファイルに出力
-    df.to_csv('./test/clustering_result.csv', index=False)
+    # df.to_csv('./test/clustering_result.csv', index=False)
 
     return df, cluster_stats

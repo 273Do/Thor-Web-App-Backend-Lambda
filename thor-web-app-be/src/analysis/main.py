@@ -2,8 +2,10 @@ import pandas as pd
 # MEMO: コンテナ内で実行する場合は以下のパスを使用
 from auxiliary_functions import narrow_the_data, filter_data
 from clustering import clustering
+from estimate import estimate
 # from src.analysis.auxiliary_functions import narrow_the_data, filter_data
 # from src.analysis.clustering import clustering
+# from src.analysis.estimate import estimate
 
 # データ解析用のメイン関数
 
@@ -32,12 +34,19 @@ def data_analyze(step_count_df, sleep_analysis_df):
     # 歩数のクラスタリング処理
     step_count_df, cluster_stats = clustering(step_count_df)
 
-    print(step_count_df.columns)
-    print(step_count_df.shape)
-    print(sleep_analysis_df.columns)
-    print(sleep_analysis_df.shape)
-    print(hasActSleep)
-    print(cluster_stats)
+    # print(step_count_df.columns)
+    # print(step_count_df.shape)
+    # print(sleep_analysis_df.columns)
+    # print(sleep_analysis_df.shape)
+    # print(hasActSleep)
+    # print(cluster_stats)
+
+    # 精査範囲(平日，休日)
+    time_range = [['3:00', '4:15', '12:00', '21:00'],
+                  ['3:00', '4:45', '12:45', '20:45']]
+
+    # 睡眠推定処理
+    estimate_sleep_df = estimate(step_count_df, time_range,)
 
     return True, None, None
 
