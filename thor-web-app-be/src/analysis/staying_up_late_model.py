@@ -1,9 +1,11 @@
 import pandas as pd
+import numpy as np
+import joblib
 
 # 歩数データから特徴量を作成する関数
 
 
-def create_feature_value(time_range, df):
+def create_feature_value(df, habit, time_range):
 
     # 特徴量となるデータの時間範囲の指定
     start, end = time_range
@@ -16,13 +18,13 @@ def create_feature_value(time_range, df):
         1)["startDate"].values[0], end=df.tail(1)["endDate"].values[0]).date
 
     # 1日毎に処理を繰り返す
-    for i, date in enumerate(unique_dates):
+    for date in unique_dates:
 
         # 指定の日付でデータを絞る
         date_df = df[df['startDate'].dt.date == date]
 
         # 日付ごとの結果を格納する辞書
-        daily_result = {"date": date}
+        daily_result = {}
 
         # 1時間毎に処理を繰り返す
         for hour in range(start, end):
@@ -42,6 +44,9 @@ def create_feature_value(time_range, df):
             daily_result[f"sumValue_{hour}_{hour + 1}"] = sum_value
             daily_result[f"valueCount_{hour}_{hour + 1}"] = count_value
 
+        # 普段の就寝時刻
+        daily_result["habit"] = habit
+
         # 1日の結果をリストに追加
         results.append(daily_result)
 
@@ -55,3 +60,28 @@ def create_feature_value(time_range, df):
 
 
 # 夜更かし検知処理を行う関数
+def sleep_prediction(feature_value_df):
+
+    # 14個の学習済みモデルのロード
+    models = []
+    for i in range(14):
+        # 学習済みモデルをロード
+        model = joblib.load(f'./models/model_{i+1}.pkl')
+        models.append(model)
+
+    # 各モデルで予測を実行
+    predictions = []
+    for model in models:
+        pred = model.predict(feature_value_df)  # 各モデルで予測
+        predictions.append(pred)
+
+    # 最終予測結果の集計（投票ベース）
+    # 各日の予測結果を多数決で決定
+    final_predictions = np.round(np.mean(predictions, axis=0)).astype(int)
+
+    # 結果の表示
+    results = pd.DataFrame({
+        'night_owl_prediction': final_predictions  # 1: 夜更かし, 0: 通常
+    })
+
+    return results

@@ -46,7 +46,7 @@ def data_analyze(step_count_df, sleep_analysis_df):
                   ['3:00', '4:45', '12:45', '20:45']]
 
     # 睡眠推定処理
-    estimate_sleep_df = estimate(step_count_df, time_range,)
+    estimate_sleep_df = estimate(step_count_df, time_range)
 
     return True, None, None
 
