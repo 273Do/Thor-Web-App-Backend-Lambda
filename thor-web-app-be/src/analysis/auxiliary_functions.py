@@ -36,6 +36,7 @@ def filter_data(df, target):
         filter_df = df[(df["sourceVersion"].str.contains("10")) & (
             df["value"] == "HKCategoryValueSleepAnalysisInBed")]
 
+    # MEMO: コンテナ内を起動する際はコメントアウトする
     # device列を削除
     filter_df['device'] = filter_df['device'].astype(str)
     filter_df = filter_df.drop("device", axis=1)

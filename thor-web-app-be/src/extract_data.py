@@ -1,8 +1,7 @@
 from .applehealthdata import HealthDataExtractor
 
 
-# export.zipからデータを抽出する
-# StepCountとSleepAnalysisのデータを抽出する
+# export.zipからStepCountとSleepAnalysisのデータを抽出する
 
 
 def extract_data(export_xml):

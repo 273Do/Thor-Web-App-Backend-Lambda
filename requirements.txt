@@ -2,7 +2,6 @@ Flask==3.0.3
 boto3
 botocore
 pandas
-numpy
 scikit-learn
 
 python-dotenv

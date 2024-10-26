@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import joblib
 
 # 歩数データから特徴量を作成する関数
@@ -76,8 +75,14 @@ def sleep_prediction(feature_value_df):
         predictions.append(pred)
 
     # 最終予測結果の集計（投票ベース）
-    # 各日の予測結果を多数決で決定
-    final_predictions = np.round(np.mean(predictions, axis=0)).astype(int)
+    # 予測結果を多数決で決定
+    final_predictions = []
+    for i in range(len(feature_value_df)):
+        # 各モデルの i 行目の予測を収集
+        votes = [pred[i] for pred in predictions]
+        # 最も多くのモデルが予測したクラスを最終予測とする
+        majority_vote = max(set(votes), key=votes.count)
+        final_predictions.append(majority_vote)
 
     # 結果の表示
     results = pd.DataFrame({
