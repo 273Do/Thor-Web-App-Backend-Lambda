@@ -1,5 +1,8 @@
 import pandas as pd
-import joblib
+import numpy as np
+# import joblib
+from models_functions import list_models_in_s3, load_model_from_s3
+# from src.analysis.models_functions import list_models_in_s3, load_model_from_s3
 
 # 歩数データから特徴量を作成する関数
 
@@ -53,7 +56,7 @@ def create_feature_value(df, habit, time_range):
     feature_value_df = pd.DataFrame(results)
 
     # csvに出力
-    feature_value_df.to_csv("./test/feature_value.csv")
+    # feature_value_df.to_csv("./test/feature_value.csv")
 
     return feature_value_df
 
@@ -62,11 +65,15 @@ def create_feature_value(df, habit, time_range):
 def sleep_prediction(feature_value_df):
 
     # 14個の学習済みモデルのロード
-    models = []
-    for i in range(14):
-        # 学習済みモデルをロード
-        model = joblib.load(f'./models/model_{i+1}.pkl')
-        models.append(model)
+    # models = []
+    # for i in range(14):
+    #     # 学習済みモデルをロード
+    #     model = joblib.load(f'./models/model_{i+1}.pkl')
+    #     models.append(model)
+    # モデル一覧を取得し、ロードする
+
+    model_keys = list_models_in_s3()
+    models = [load_model_from_s3(key) for key in model_keys]
 
     # 各モデルで予測を実行
     predictions = []
@@ -76,17 +83,19 @@ def sleep_prediction(feature_value_df):
 
     # 最終予測結果の集計（投票ベース）
     # 予測結果を多数決で決定
-    final_predictions = []
-    for i in range(len(feature_value_df)):
-        # 各モデルの i 行目の予測を収集
-        votes = [pred[i] for pred in predictions]
-        # 最も多くのモデルが予測したクラスを最終予測とする
-        majority_vote = max(set(votes), key=votes.count)
-        final_predictions.append(majority_vote)
+    final_predictions = np.round(np.mean(predictions, axis=0)).astype(int)
+
+    # final_predictions = []
+    # for i in range(len(feature_value_df)):
+    #     # 各モデルの i 行目の予測を収集
+    #     votes = [pred[i] for pred in predictions]
+    #     # 最も多くのモデルが予測したクラスを最終予測とする
+    #     majority_vote = max(set(votes), key=votes.count)
+    #     final_predictions.append(majority_vote)
 
     # 結果の表示
     results = pd.DataFrame({
-        'night_owl_prediction': final_predictions  # 1: 夜更かし, 0: 通常
+        'staying_up_late_prediction': final_predictions  # 1: 夜更かし, 0: 通常
     })
 
     return results

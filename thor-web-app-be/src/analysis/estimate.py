@@ -1,6 +1,6 @@
-# MEMO: デプロイ/コンテナ内で実行する場合は以下のパスを使用
-# from staying_up_late_model import create_feature_value, sleep_prediction
-from src.analysis.staying_up_late_model import create_feature_value, sleep_prediction
+# MEMO: コンテナ内で実行する場合は以下のパスを使用
+from staying_up_late_model import create_feature_value, sleep_prediction
+# from src.analysis.staying_up_late_model import create_feature_value, sleep_prediction
 
 # 歩数から睡眠を推定する処理
 
