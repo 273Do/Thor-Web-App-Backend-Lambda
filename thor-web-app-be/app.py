@@ -10,11 +10,12 @@ app = Flask(__name__)
 # 署名付きurlを発行するエンドポイント
 
 
-@app.route("/get_presigned_url", methods=['GET'])
+@app.route("/get_presigned_url", methods=['POST'])
 def get_presigned_url():
 
-    # クエリパラメータからファイル名を取得
-    file_name = request.args.get('file_name')
+    # リクエストボディからファイル名を取得
+    request_body = request.json
+    file_name = request_body.get('file_name')
 
     # ファイル名が指定されていない場合はエラーを返す
     if not file_name:
