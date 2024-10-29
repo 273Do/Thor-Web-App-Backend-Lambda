@@ -19,7 +19,7 @@ def clustering(df):
 
     # 重心を計算
     centroids = kmeans_model.cluster_centers_
-    # 部屋：2,家：0,外：1
+    # 部屋：0,家：1,外：2
 
     # 各クラスタから最大値と最小値を取得し，配列に格納
     cluster_stats = []

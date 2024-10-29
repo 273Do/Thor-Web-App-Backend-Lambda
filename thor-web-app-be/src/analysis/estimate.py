@@ -1,6 +1,6 @@
 # MEMO: コンテナ内で実行する場合は以下のパスを使用
-from staying_up_late_model import create_feature_value, sleep_prediction
-# from src.analysis.staying_up_late_model import create_feature_value, sleep_prediction
+# from staying_up_late_model import create_feature_value, sleep_prediction
+from src.analysis.staying_up_late_model import create_feature_value, sleep_prediction
 
 # 歩数から睡眠を推定する処理
 
@@ -14,8 +14,8 @@ def estimate(step_df, time_range):
     # 推定処理の実行(予測の実行)
     staying_up_late_predictions = sleep_prediction(feature_value_df)
 
-    print(staying_up_late_predictions)
-    print("予測結果")
+    # print(staying_up_late_predictions)
+    # print("予測結果")
 
     # その日が夜更かしをしているかどうかを機械学習モデルから推定
     is_staying_up_late = False

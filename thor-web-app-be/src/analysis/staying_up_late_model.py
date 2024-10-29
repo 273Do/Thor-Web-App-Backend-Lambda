@@ -1,7 +1,9 @@
+import os
 import pandas as pd
 import numpy as np
-# import joblib
-from models_functions import list_models_in_s3, load_model_from_s3
+import joblib
+
+# from models_functions import list_models_in_s3, load_model_from_s3
 # from src.analysis.models_functions import list_models_in_s3, load_model_from_s3
 
 # 歩数データから特徴量を作成する関数
@@ -65,15 +67,16 @@ def create_feature_value(df, habit, time_range):
 def sleep_prediction(feature_value_df):
 
     # 14個の学習済みモデルのロード
-    # models = []
-    # for i in range(14):
-    #     # 学習済みモデルをロード
-    #     model = joblib.load(f'./models/model_{i+1}.pkl')
-    #     models.append(model)
-    # モデル一覧を取得し、ロードする
+    models = []
+    for i in range(14):
+        # 学習済みモデルをロード
+        model = joblib.load(
+            f'{os.path.dirname(__file__)}/models/model_{i+1}.pkl')
+        models.append(model)
 
-    model_keys = list_models_in_s3()
-    models = [load_model_from_s3(key) for key in model_keys]
+    # s3からモデル一覧を取得し，ロードする(使用しない)
+    # model_keys = list_models_in_s3()
+    # models = [load_model_from_s3(key) for key in model_keys]
 
     # 各モデルで予測を実行
     predictions = []
@@ -81,10 +84,11 @@ def sleep_prediction(feature_value_df):
         pred = model.predict(feature_value_df)  # 各モデルで予測
         predictions.append(pred)
 
-    # 最終予測結果の集計（投票ベース）
+    # 最終予測結果の集計（アンサンブル学習 / 投票ベース）
     # 予測結果を多数決で決定
     final_predictions = np.round(np.mean(predictions, axis=0)).astype(int)
 
+    # numpyを使用しない方法
     # final_predictions = []
     # for i in range(len(feature_value_df)):
     #     # 各モデルの i 行目の予測を収集
