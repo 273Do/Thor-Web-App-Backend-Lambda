@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 def narrow_the_data(df, months):
 
     # データの最後の日の観測時間を取得
-    end_date = df.iloc[-1]['startDate']
+    end_date = df.iloc[-1]["startDate"]
 
     # 精査する範囲の最初の日を設定
     start_date = end_date - relativedelta(months=months-1)
@@ -38,7 +38,7 @@ def filter_data(df, target):
 
     # MEMO: コンテナ内を起動する際はコメントアウトする
     # device列を削除
-    filter_df['device'] = filter_df['device'].astype(str)
+    filter_df["device"] = filter_df["device"].astype(str)
     filter_df = filter_df.drop("device", axis=1)
 
     return filter_df

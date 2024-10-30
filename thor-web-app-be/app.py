@@ -11,13 +11,13 @@ app = Flask(__name__)
 # 解析処理をするエンドポイント
 
 
-@app.route("/analyze", methods=['POST'])
+@app.route("/analyze", methods=["POST"])
 def analyze():
 
     # リクエストボディからUUIDを取得
     request_body = request.json
-    UUID = request_body.get('UUID')
-    file_name = request_body.get('file_name')
+    UUID = request_body.get("UUID")
+    file_name = request_body.get("file_name")
     # s3に格納されているデータのディレクトリを指定
     file_dir = f"{UUID}/{file_name}"
 
@@ -54,9 +54,9 @@ def analyze():
     if not success:
         return {"status": "failed", "error_message": error_message}, 500
 
-    return jsonify({'message': 'successfully',
-                    'body': json.dumps(
+    return jsonify({"message": "successfully",
+                    "body": json.dumps(
                         {
-                            'UUID': UUID
+                            "UUID": UUID
                         }
                     )}), 200

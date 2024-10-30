@@ -25,7 +25,7 @@ def create_feature_value(df, habit, time_range):
     for date in unique_dates:
 
         # 指定の日付でデータを絞る
-        date_df = df[df['startDate'].dt.date == date]
+        date_df = df[df["startDate"].dt.date == date]
 
         # 日付ごとの結果を格納する辞書
         daily_result = {}
@@ -40,8 +40,8 @@ def create_feature_value(df, habit, time_range):
             end_time = pd.to_datetime(f"{hour+1}:00")
 
             # 指定の時間範囲でデータを絞る
-            hour_df = date_df[(date_df['startDate'].dt.time >= start_time.time()) &
-                              (date_df['startDate'].dt.time <= end_time.time())]
+            hour_df = date_df[(date_df["startDate"].dt.time >= start_time.time()) &
+                              (date_df["startDate"].dt.time <= end_time.time())]
 
             # 1時間の歩数の合計とデータ数を取得
             sum_value = hour_df["value"].sum()
@@ -62,7 +62,7 @@ def create_feature_value(df, habit, time_range):
 
     # csvに出力
     # feature_value_df.to_csv(
-    #     f'{os.path.dirname(__file__)}/test/feature_value.csv')
+    #     f"{os.path.dirname(__file__)}/test/feature_value.csv")
 
     return feature_value_df
 
@@ -76,7 +76,7 @@ def sleep_prediction(feature_value_df):
     for i in range(14):
         # 学習済みモデルをロード
         model = joblib.load(
-            f'{os.path.dirname(__file__)}/models/model_{i+1}.pkl')
+            f"{os.path.dirname(__file__)}/models/model_{i+1}.pkl")
         models.append(model)
 
     # s3からモデル一覧を取得し，ロードする(使用しない)
@@ -110,7 +110,7 @@ def sleep_prediction(feature_value_df):
     })
 
     # csvに出力
-    # results.to_csv(f'{os.path.dirname(__file__)
-    #                   }/staying_up_late_prediction.csv')
+    # results.to_csv(f"{os.path.dirname(__file__)
+    #                   }/staying_up_late_prediction.csv")
 
     return results

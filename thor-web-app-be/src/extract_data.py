@@ -14,8 +14,8 @@ def extract_data(export_xml):
 
         # DataFrame の取得と表示
         dfs = extractor.get_dataframes()
-        step_count_df = dfs['StepCount']
-        sleep_analysis_df = dfs['SleepAnalysis']
+        step_count_df = dfs["StepCount"]
+        sleep_analysis_df = dfs["SleepAnalysis"]
 
         return True, None, step_count_df, sleep_analysis_df
     except Exception as e:

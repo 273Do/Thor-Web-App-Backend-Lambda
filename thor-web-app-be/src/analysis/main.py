@@ -14,12 +14,12 @@ def data_analyze(step_count_df, sleep_analysis_df):
 
     # "startDate" と "endDate" の列を datetime 型に変換
     for df in [step_count_df, sleep_analysis_df]:
-        df['startDate'] = pd.to_datetime(df['startDate'])
-        df['endDate'] = pd.to_datetime(df['endDate'])
+        df["startDate"] = pd.to_datetime(df["startDate"])
+        df["endDate"] = pd.to_datetime(df["endDate"])
 
-    # step_count_dfの 'value' カラムを数値型に変換（変換できない値は NaN にする）
-    step_count_df['value'] = pd.to_numeric(
-        step_count_df['value'], errors='coerce')
+    # step_count_dfの "value" カラムを数値型に変換（変換できない値は NaN にする）
+    step_count_df["value"] = pd.to_numeric(
+        step_count_df["value"], errors="coerce")
 
     # 歩数データと睡眠データを直近3ヶ月間に絞る
     step_count_df = narrow_the_data(step_count_df, 3)
@@ -45,8 +45,8 @@ def data_analyze(step_count_df, sleep_analysis_df):
     print(cluster_stats)
 
     # 精査範囲(平日，休日)
-    time_range = [['3:00', '4:15', '12:00', '21:00'],
-                  ['3:00', '4:45', '12:45', '20:45']]
+    time_range = [["3:00", "4:15", "12:00", "21:00"],
+                  ["3:00", "4:45", "12:45", "20:45"]]
 
     # 睡眠推定処理
     estimate_sleep_df = estimate(step_count_df, time_range)
@@ -58,12 +58,12 @@ def data_analyze(step_count_df, sleep_analysis_df):
 # CSVファイルを読み込む
 
 # MEMO: コンテナ内で実行する場合は以下の2列のパスを使用
-# sc_df = pd.read_csv('./test/StepCountCP.csv', low_memory=False)
-# sa_df = pd.read_csv('./test/SleepAnalysisCP.csv', low_memory=False)
+# sc_df = pd.read_csv("./test/StepCountCP.csv", low_memory=False)
+# sa_df = pd.read_csv("./test/SleepAnalysisCP.csv", low_memory=False)
 # # sc_df = pd.read_csv(
-# #     './thor-web-app-be/src/analysis/test/SleepAnalysisCP.csv', low_memory=False)
+# #     "./thor-web-app-be/src/analysis/test/SleepAnalysisCP.csv", low_memory=False)
 # # sa_df = pd.read_csv(
-# #     './thor-web-app-be/src/analysis/test/SleepAnalysisCP.csv', low_memory=False)
+# #     "./thor-web-app-be/src/analysis/test/SleepAnalysisCP.csv", low_memory=False)
 
 # # 必要な列だけを抽出する
 # sc_df = sc_df[["sourceVersion", "device", "startDate", "endDate", "value"]]
