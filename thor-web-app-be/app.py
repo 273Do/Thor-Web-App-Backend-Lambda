@@ -53,8 +53,6 @@ def analyze():
         step_count_df, sleep_analysis_df)
     if not success:
         return {"status": "failed", "error_message": error_message}, 500
-    else:
-        print(analysis_results)
 
     return jsonify({'message': 'successfully',
                     'body': json.dumps(

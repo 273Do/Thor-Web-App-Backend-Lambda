@@ -46,7 +46,7 @@ def setReferenceTime(weekday_probability, holiday_probability):
 
             # 基準/精査先の時間を設定する処理
             for k in range(2):
-                # print(data_frame)
+
                 if (k == 0):  # 1つ目の基準/精査先のdf
                     standard_percent = data_frame.iloc[0:1]
                     # 基準/精査先の前の時間のdfを取得
