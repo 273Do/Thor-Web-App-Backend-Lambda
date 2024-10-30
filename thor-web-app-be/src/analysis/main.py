@@ -43,7 +43,7 @@ def data_analyze(step_count_df, sleep_analysis_df):
     # print(sleep_analysis_df.columns)
     # print(sleep_analysis_df.shape)
     # print(hasActSleep)
-    print(cluster_stats)
+    # print(cluster_stats)
 
     # 精査範囲(平日，休日)
     time_range = [['3:00', '4:15', '12:00', '21:00'],

@@ -30,6 +30,9 @@ def create_feature_value(df, habit, time_range):
         # 日付ごとの結果を格納する辞書
         daily_result = {}
 
+        # 日付を格納
+        daily_result["date"] = date
+
         # 1時間毎に処理を繰り返す
         for hour in range(start, end):
 
@@ -81,7 +84,8 @@ def sleep_prediction(feature_value_df):
     # 各モデルで予測を実行
     predictions = []
     for model in models:
-        pred = model.predict(feature_value_df)  # 各モデルで予測
+        # 日付以外を特徴量として予測
+        pred = model.predict(feature_value_df.drop("date", axis=1))  # 各モデルで予測
         predictions.append(pred)
 
     # 最終予測結果の集計（アンサンブル学習 / 投票ベース）
@@ -99,7 +103,11 @@ def sleep_prediction(feature_value_df):
 
     # 結果の表示
     results = pd.DataFrame({
-        'staying_up_late_prediction': final_predictions  # 1: 夜更かし, 0: 通常
+        "date": feature_value_df["date"],
+        "staying_up_late_prediction": final_predictions  # 1: 夜更かし, 0: 通常
     })
+
+    # csvに出力
+    # results.to_csv("./test/staying_up_late_prediction.csv")
 
     return results
