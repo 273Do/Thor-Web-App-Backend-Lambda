@@ -12,11 +12,13 @@ def estimate(step_df, time_range):
     feature_value_df = create_feature_value(step_df, 0, [0, 12])
 
     # 推定処理の実行(予測の実行)
+    # その日が夜更かしをしているかどうかを機械学習モデルから推定
     staying_up_late_predictions = sleep_prediction(feature_value_df)
 
+    print(step_df[["startDate", "cluster"]])
     print(staying_up_late_predictions)
 
-    # その日が夜更かしをしているかどうかを機械学習モデルから推定
+    # その日が夜更かしをしているかどうかを判断するフラグ
     is_staying_up_late = False
 
     if (is_staying_up_late):

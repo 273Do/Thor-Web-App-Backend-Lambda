@@ -18,8 +18,8 @@ def create_feature_value(df, habit, time_range):
     results = []
 
     # データの日付範囲を設定
-    unique_dates = pd.date_range(start=df.head(
-        1)["startDate"].values[0], end=df.tail(1)["endDate"].values[0]).date
+    unique_dates = pd.date_range(
+        start=df["startDate"].iloc[0], end=df["startDate"].iloc[-1]).date
 
     # 1日毎に処理を繰り返す
     for date in unique_dates:
@@ -61,12 +61,14 @@ def create_feature_value(df, habit, time_range):
     feature_value_df = pd.DataFrame(results)
 
     # csvに出力
-    # feature_value_df.to_csv("./test/feature_value.csv")
+    # feature_value_df.to_csv(
+    #     f'{os.path.dirname(__file__)}/test/feature_value.csv')
 
     return feature_value_df
 
 
 # 夜更かし検知処理を行う関数
+# その日が夜更かしをしているかどうかを機械学習モデルから推定
 def sleep_prediction(feature_value_df):
 
     # 14個の学習済みモデルのロード
@@ -108,6 +110,7 @@ def sleep_prediction(feature_value_df):
     })
 
     # csvに出力
-    # results.to_csv("./test/staying_up_late_prediction.csv")
+    # results.to_csv(f'{os.path.dirname(__file__)
+    #                   }/staying_up_late_prediction.csv')
 
     return results
