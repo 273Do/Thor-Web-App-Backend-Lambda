@@ -55,7 +55,7 @@ def analyze():
 
     # 解析処理
     success, error_message, analysis_results = data_analyze(
-        step_count_df, sleep_analysis_df, habit)
+        step_count_df, sleep_analysis_df, int(habit))
     if not success:
         return {"status": "failed", "error_message": error_message}, 500
 

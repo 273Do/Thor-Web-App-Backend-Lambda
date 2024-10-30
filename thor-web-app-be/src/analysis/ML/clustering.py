@@ -1,3 +1,4 @@
+import os
 from sklearn.cluster import KMeans
 
 # 歩数のクラスタリングを行う関数
@@ -34,6 +35,6 @@ def clustering(df):
         )
 
     # csvファイルに出力
-    # df.to_csv("./test/clustering_result.csv", index=False)
+    # df.to_csv(f"{os.path.dirname(__file__)}/../test/clu_res.csv", index=False)
 
     return df, cluster_stats
