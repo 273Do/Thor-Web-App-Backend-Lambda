@@ -7,10 +7,15 @@ from src.analysis.auxiliary_functions import narrow_the_data, filter_data
 from src.analysis.ML.clustering import clustering
 from src.analysis.estimate import estimate
 
+# 精査範囲(平日，休日)
+# 関数setReferenceTimeから取得可能
+time_range = [["3:00", "4:15", "12:00", "21:00"],
+              ["3:00", "4:45", "12:45", "20:45"]]
+
 # データ解析用のメイン関数
 
 
-def data_analyze(step_count_df, sleep_analysis_df):
+def data_analyze(step_count_df, sleep_analysis_df, habit):
 
     # "startDate" と "endDate" の列を datetime 型に変換
     for df in [step_count_df, sleep_analysis_df]:
@@ -38,13 +43,9 @@ def data_analyze(step_count_df, sleep_analysis_df):
     step_count_df, cluster_stats = clustering(step_count_df)
     print(cluster_stats)
 
-    # 精査範囲(平日，休日)
-    time_range = [["3:00", "4:15", "12:00", "21:00"],
-                  ["3:00", "4:45", "12:45", "20:45"]]
-
     # 睡眠推定処理
     # habit:普段の就寝時刻(事前アンケート)3時以前を０，3時以降を1
-    estimate_sleep_df = estimate(step_count_df, time_range, 0)
+    estimate_sleep_df = estimate(step_count_df, time_range, habit)
 
     return True, None, None
 

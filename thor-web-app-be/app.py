@@ -18,6 +18,8 @@ def analyze():
     request_body = request.json
     UUID = request_body.get("UUID")
     file_name = request_body.get("file_name")
+    habit = request_body.get("habit")
+
     # s3に格納されているデータのディレクトリを指定
     file_dir = f"{UUID}/{file_name}"
 
@@ -27,6 +29,9 @@ def analyze():
     # ファイル名が指定されていない場合はエラーを返す
     if not file_name:
         return jsonify({"error": "file_name parameter is required"}), 400
+    # habitが指定されていない場合はエラーを返す
+    if not habit:
+        return jsonify({"error": "habit parameter is required"}), 400
 
     # メイン処理
     # s3からファイルを取得
@@ -50,7 +55,7 @@ def analyze():
 
     # 解析処理
     success, error_message, analysis_results = data_analyze(
-        step_count_df, sleep_analysis_df)
+        step_count_df, sleep_analysis_df, habit)
     if not success:
         return {"status": "failed", "error_message": error_message}, 500
 
