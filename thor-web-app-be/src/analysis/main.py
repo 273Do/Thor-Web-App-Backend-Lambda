@@ -36,12 +36,6 @@ def data_analyze(step_count_df, sleep_analysis_df):
 
     # 歩数のクラスタリング処理
     step_count_df, cluster_stats = clustering(step_count_df)
-
-    # print(step_count_df.columns)
-    # print(step_count_df.shape)
-    # print(sleep_analysis_df.columns)
-    # print(sleep_analysis_df.shape)
-    # print(hasActSleep)
     print(cluster_stats)
 
     # 精査範囲(平日，休日)
@@ -49,7 +43,8 @@ def data_analyze(step_count_df, sleep_analysis_df):
                   ["3:00", "4:45", "12:45", "20:45"]]
 
     # 睡眠推定処理
-    estimate_sleep_df = estimate(step_count_df, time_range)
+    # habit:普段の就寝時刻(事前アンケート)3時以前を０，3時以降を1
+    estimate_sleep_df = estimate(step_count_df, time_range, 0)
 
     return True, None, None
 
