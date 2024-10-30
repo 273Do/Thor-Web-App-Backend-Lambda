@@ -1,10 +1,10 @@
 import pandas as pd
 # MEMO: コンテナ内で実行する場合は以下のパスを使用
 # from auxiliary_functions import narrow_the_data, filter_data
-# from clustering import clustering
+# from ML.clustering import clustering
 # from estimate import estimate
 from src.analysis.auxiliary_functions import narrow_the_data, filter_data
-from src.analysis.clustering import clustering
+from src.analysis.ML.clustering import clustering
 from src.analysis.estimate import estimate
 
 # データ解析用のメイン関数

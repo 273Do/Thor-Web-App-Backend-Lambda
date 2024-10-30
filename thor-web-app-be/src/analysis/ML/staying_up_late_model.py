@@ -4,7 +4,7 @@ import numpy as np
 import joblib
 
 # from models_functions import list_models_in_s3, load_model_from_s3
-# from src.analysis.models_functions import list_models_in_s3, load_model_from_s3
+# from src.analysis.ML.models_functions import list_models_in_s3, load_model_from_s3
 
 # 歩数データから特徴量を作成する関数
 
