@@ -19,7 +19,7 @@ def create_feature_value(df, habit, time_range):
 
     # データの日付範囲を設定
     unique_dates = pd.date_range(
-        start=df["startDate"].iloc[0], end=df["startDate"].iloc[-1]).date
+        start=df["startDate"].iloc[0].date(), end=df["startDate"].iloc[-1].date()).date
 
     # 1日毎に処理を繰り返す
     for date in unique_dates:
@@ -90,8 +90,8 @@ def staying_up_late_prediction(feature_value_df):
         pred = model.predict(feature_value_df.drop("date", axis=1))  # 各モデルで予測
         predictions.append(pred)
 
-    # 最終予測結果の集計（アンサンブル学習 / 投票ベース）
-    # 予測結果を多数決で決定
+    # 最終予測結果の集計(アンサンブル学習 / 投票ベース)
+    # 予測結果を多数決で決定(各モデルの予測結果の平均値を取り，四捨五入)
     final_predictions = np.round(np.mean(predictions, axis=0)).astype(int)
 
     # numpyを使用しない方法
@@ -105,7 +105,7 @@ def staying_up_late_prediction(feature_value_df):
 
     # 結果の表示
     results = pd.DataFrame({
-        "date": feature_value_df["date"],
+        "date": pd.to_datetime(feature_value_df["date"]),
         "staying_up_late_prediction": final_predictions  # 1: 夜更かし, 0: 通常
     })
 

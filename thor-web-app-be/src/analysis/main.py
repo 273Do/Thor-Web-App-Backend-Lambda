@@ -1,11 +1,11 @@
 import pandas as pd
 # MEMO: コンテナ内で実行する場合は以下のパスを使用
-# from auxiliary_functions import narrow_the_data, filter_data
-# from ML.clustering import clustering
-# from estimate import estimate
-from src.analysis.auxiliary_functions import narrow_the_data, filter_data
-from src.analysis.ML.clustering import clustering
-from src.analysis.estimate import estimate
+from auxiliary_functions import narrow_the_data, filter_data
+from ML.clustering import clustering
+from estimate.estimate import estimate
+# from src.analysis.auxiliary_functions import narrow_the_data, filter_data
+# from src.analysis.ML.clustering import clustering
+# from src.analysis.estimate.estimate import estimate
 
 # 精査範囲(平日，休日)
 # 関数setReferenceTimeから取得可能
@@ -54,15 +54,15 @@ def data_analyze(step_count_df, sleep_analysis_df, habit):
 # CSVファイルを読み込む
 
 # MEMO: コンテナ内で実行する場合は以下の2列のパスを使用
-# sc_df = pd.read_csv("./test/StepCountCP.csv", low_memory=False)
-# sa_df = pd.read_csv("./test/SleepAnalysisCP.csv", low_memory=False)
-# # sc_df = pd.read_csv(
-# #     "./thor-web-app-be/src/analysis/test/SleepAnalysisCP.csv", low_memory=False)
-# # sa_df = pd.read_csv(
-# #     "./thor-web-app-be/src/analysis/test/SleepAnalysisCP.csv", low_memory=False)
+sc_df = pd.read_csv("./test/StepCountCP.csv", low_memory=False)
+sa_df = pd.read_csv("./test/SleepAnalysisCP.csv", low_memory=False)
+# sc_df = pd.read_csv(
+#     "./thor-web-app-be/src/analysis/test/SleepAnalysisCP.csv", low_memory=False)
+# sa_df = pd.read_csv(
+#     "./thor-web-app-be/src/analysis/test/SleepAnalysisCP.csv", low_memory=False)
 
-# # 必要な列だけを抽出する
-# sc_df = sc_df[["sourceVersion", "device", "startDate", "endDate", "value"]]
-# sa_df = sa_df[["sourceVersion", "device", "startDate", "endDate", "value"]]
+# 必要な列だけを抽出する
+sc_df = sc_df[["sourceVersion", "device", "startDate", "endDate", "value"]]
+sa_df = sa_df[["sourceVersion", "device", "startDate", "endDate", "value"]]
 
-# data_analyze(sc_df, sa_df)
+data_analyze(sc_df, sa_df, 0)
