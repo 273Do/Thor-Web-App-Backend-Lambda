@@ -41,4 +41,10 @@ def filter_data(df, target):
     filter_df["device"] = filter_df["device"].astype(str)
     filter_df = filter_df.drop("device", axis=1)
 
+    # 最新バージョンのみのレコードを残す
+    # filter_df['sourceVersion'] = filter_df['sourceVersion'].apply(
+    #     lambda x: int(x.split('.')[0]))  # マイナーバージョンを消してメジャーバージョンのみを取得
+    # latest_version = filter_df["sourceVersion"].max()  # 最新のバージョンを取得
+    # filter_df = filter_df[filter_df["sourceVersion"] == latest_version]
+
     return filter_df
