@@ -7,10 +7,6 @@ from estimate.estimate import estimate
 # from src.analysis.ML.clustering import clustering
 # from src.analysis.estimate.estimate import estimate
 
-# 精査範囲(平日，休日)
-# 関数setReferenceTimeから取得可能
-time_range_list = [["3:00", "4:15", "12:00", "21:00"],
-                   ["3:00", "4:45", "12:45", "20:45"]]
 
 # データ解析用のメイン関数
 
@@ -45,7 +41,7 @@ def data_analyze(step_count_df, sleep_analysis_df, habit):
 
     # 睡眠推定処理
     # habit:普段の就寝時刻(事前アンケート)3時以前を０，3時以降を1
-    estimate_sleep_df = estimate(step_count_df, time_range_list, habit)
+    estimate_sleep_df = estimate(step_count_df, habit)
 
     return True, None, None
 

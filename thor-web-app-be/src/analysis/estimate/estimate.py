@@ -7,7 +7,7 @@ from estimate.est_sleep_from_step import estimate_sleep_from_step
 # 歩数から睡眠を推定するメイン処理
 
 
-def estimate(step_count_df, time_range_list, habit):
+def estimate(step_count_df, habit):
 
     # 歩数データから特徴量を作成
     feature_value_df = create_feature_value(step_count_df, habit, [0, 12])
@@ -21,7 +21,7 @@ def estimate(step_count_df, time_range_list, habit):
     print(staying_up_late_predictions_df)
 
     # 歩数から睡眠を推定する処理
-    estimate_sleep_df = estimate_sleep_from_step(step_count_df, time_range_list,
-                                                 staying_up_late_predictions_df)
+    estimate_sleep_df = estimate_sleep_from_step(
+        step_count_df, staying_up_late_predictions_df)
 
     return None

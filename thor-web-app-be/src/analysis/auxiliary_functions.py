@@ -1,4 +1,5 @@
 from dateutil.relativedelta import relativedelta
+from datetime import time
 
 # 補助関数を定義するファイル
 
@@ -48,3 +49,14 @@ def filter_data(df, target):
     # filter_df = filter_df[filter_df["sourceVersion"] == latest_version]
 
     return filter_df
+
+
+# 時間型のデータをjsonに変換する関数
+
+
+def custom_converter(obj):
+    if isinstance(obj, time):
+        return obj.strftime("%H:%M:%S")
+    raise TypeError(f"Type {type(obj)} not serializable")
+# 使い方
+# print(json.dumps(result, default=custom_converter, indent=4))

@@ -1,14 +1,23 @@
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
+
+# 精査範囲(平日，休日)
+# 関数setReferenceTimeから取得可能
+time_range_list = [["3:00", "4:15", "12:00", "21:00"],
+                   ["3:00", "4:45", "12:45", "20:45"]]
+
 
 # 歩数から睡眠を推定する処理
 
 
-def estimate_sleep_from_step(df, time_range_list, staying_up_late_predictions_df):
+def estimate_sleep_from_step(df, staying_up_late_predictions_df):
 
     # データの日付範囲を設定
     unique_dates = pd.date_range(
         start=df["startDate"].iloc[0].date(), end=df["startDate"].iloc[-1].date()).date
+
+    # 結果格納用の辞書
+    result = {}
 
     # 1日毎に処理を繰り返す
     for i, date in enumerate(unique_dates):
@@ -43,15 +52,17 @@ def estimate_sleep_from_step(df, time_range_list, staying_up_late_predictions_df
             # その日の歩数データを取得
             day_step_count_df = df[(df["startDate"].dt.date == date)].sort_values(
                 "startDate")
-            result = staying_up_late_sleep_estimation(
+            sleep_detail = staying_up_late_sleep_estimation(
                 day_step_count_df, time_range, 1)
-            print(result)
+            # print(sleep_detail)
+            result[date.strftime('%Y/%m/%d')] = sleep_detail
+            print(sleep_detail)
 
         else:
             # 夜更かししていない場合の推定処理
-            result = normal_sleep_estimation()
+            sleep_detail = normal_sleep_estimation()
 
-        # 補正処理
+    # 補正処理
 
 
 # 夜更かししている場合の推定処理
@@ -73,6 +84,8 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
     # 初期値
     pre_endDate = pd.to_datetime(f"{start}:00").time()
     tmp = timedelta()  # 初期値は0秒
+
+    # 結果格納用の辞書
     result = {}
 
     # その日の歩数データごとに処理を繰り返す
@@ -96,10 +109,21 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
         if current_diff > tmp:
             # print("更新")
             tmp = current_diff
+
+            # timedelta を datetime.time に変換
+            total_seconds = int(tmp.total_seconds())
+            hours = total_seconds // 3600
+            minutes = (total_seconds % 3600) // 60
+            seconds = total_seconds % 60
+
+            # datetime.time オブジェクトを作成
+            converted_tmp = time(hours, minutes, seconds)
+
+            # 最新の睡眠時間を格納
             result = {
                 "bed_time": pre_end_datetime.time(),
                 "wake_time": start_datetime.time(),
-                "sleep_time": tmp
+                "sleep_time": converted_tmp
             }
 
         # endDate を更新
