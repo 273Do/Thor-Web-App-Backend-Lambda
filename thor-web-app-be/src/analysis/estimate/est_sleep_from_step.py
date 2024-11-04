@@ -45,6 +45,7 @@ def estimate_sleep_from_step(df, time_range_list, staying_up_late_predictions_df
                 "startDate")
             result = staying_up_late_sleep_estimation(
                 day_step_count_df, time_range, 1)
+            print(result)
 
         else:
             # 夜更かししていない場合の推定処理
@@ -58,7 +59,7 @@ def estimate_sleep_from_step(df, time_range_list, staying_up_late_predictions_df
 
 def staying_up_late_sleep_estimation(df, time_range, cluster_id):
 
-    print("---夜更かししている")
+    # print("---夜更かししている")
 
     # 精査するデータの時間範囲の指定
     start, *_, end = time_range[0], time_range[3]
@@ -67,9 +68,8 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
     df = df[(df["endDate"].dt.time >= pd.to_datetime(f"{start}:00").time()) &
             (df["startDate"].dt.time <= pd.to_datetime(f"{end}:00").time())]
 
-    print(start, end)
+    # print(start, end)
 
-    # start = "08:00"
     # 初期値
     pre_endDate = pd.to_datetime(f"{start}:00").time()
     tmp = timedelta()  # 初期値は0秒
@@ -77,11 +77,11 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
 
     # その日の歩数データごとに処理を繰り返す
     for _, row in df.iterrows():
-        print(row["startDate"].time(), row["endDate"].time(), row["cluster"])
+        # print(row["startDate"].time(), row["endDate"].time(), row["cluster"])
 
         # pre_endDate > 現在の startDate の場合はスキップ（複数端末への対応）
         if pre_endDate > row["startDate"].time():
-            print("スキップ")
+            # print("スキップ")
             continue
 
         # pre_endDate と startDate の時間差を計算
@@ -90,11 +90,11 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
             datetime.today(), row["startDate"].time())
         current_diff = start_datetime - pre_end_datetime
 
-        print(pre_end_datetime.time(), start_datetime.time())
+        # print(pre_end_datetime.time(), start_datetime.time())
 
         # 現在の時間差が最大の時間差より大きい場合は更新
         if current_diff > tmp:
-            print("更新")
+            # print("更新")
             tmp = current_diff
             result = {
                 "bed_time": pre_end_datetime.time(),
@@ -106,9 +106,9 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
         pre_endDate = row["endDate"].time()
 
         # デバッグ情報の出力
-        print(current_diff)
-        print(f"Updated tmp: {tmp}, Updated pre_endDate: {pre_endDate}")
-        print("-----")
+        # print(current_diff)
+        # print(f"Updated tmp: {tmp}, Updated pre_endDate: {pre_endDate}")
+        # print("-----")
 
         # 外出検知の場合はスキップ
         if row["cluster"] == cluster_id:
@@ -118,8 +118,8 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
     result["staying_up_late"] = True
     result["data_count"] = len(df)
 
-    print("結果")
-    print(result)
+    # print("結果")
+    # print(result)
 
     return result
 
