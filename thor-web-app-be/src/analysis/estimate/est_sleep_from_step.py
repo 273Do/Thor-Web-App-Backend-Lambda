@@ -1,5 +1,6 @@
 import pandas as pd
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
+from auxiliary_functions import convert_timedelta_to_time
 
 # 精査範囲(平日，休日)
 # 関数setReferenceTimeから取得可能
@@ -7,7 +8,7 @@ time_range_list = [["3:00", "4:15", "12:00", "21:00"],
                    ["3:00", "4:45", "12:45", "20:45"]]
 
 
-# 歩数から睡眠を推定する処理
+# MEMO: 歩数から睡眠を推定する処理
 
 
 def estimate_sleep_from_step(df, staying_up_late_predictions_df):
@@ -21,7 +22,7 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df):
 
     # 1日毎に処理を繰り返す
     for i, date in enumerate(unique_dates):
-        # MEMO: 睡眠の定義
+        # NOTE: 睡眠の定義
         # どこからどこまでをその日の睡眠と定義するか
         # -> 前日の21時(5 %)から翌日の21時まで
 
@@ -54,18 +55,25 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df):
                 "startDate")
             sleep_detail = staying_up_late_sleep_estimation(
                 day_step_count_df, time_range, 1)
-            # print(sleep_detail)
+
+            # 結果を格納
             result[date.strftime('%Y/%m/%d')] = sleep_detail
-            print(sleep_detail)
+            # print(sleep_detail)
 
         else:
             # 夜更かししていない場合の推定処理
-            sleep_detail = normal_sleep_estimation()
+
+            # その日と前日の歩数データを取得
+            day_step_count_df = df[(df["startDate"].dt.date == date) |
+                                   (df["startDate"].dt.date == (date - timedelta(days=1)))].sort_values("startDate")
+
+            sleep_detail = normal_sleep_estimation(
+                day_step_count_df, time_range)
 
     # 補正処理
 
 
-# 夜更かししている場合の推定処理
+# MEMO: 夜更かししている場合の推定処理
 
 
 def staying_up_late_sleep_estimation(df, time_range, cluster_id):
@@ -111,13 +119,7 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
             tmp = current_diff
 
             # timedelta を datetime.time に変換
-            total_seconds = int(tmp.total_seconds())
-            hours = total_seconds // 3600
-            minutes = (total_seconds % 3600) // 60
-            seconds = total_seconds % 60
-
-            # datetime.time オブジェクトを作成
-            converted_tmp = time(hours, minutes, seconds)
+            converted_tmp = convert_timedelta_to_time(tmp)
 
             # 最新の睡眠時間を格納
             result = {
@@ -147,8 +149,9 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
 
     return result
 
-# 夜更かししていない場合の推定処理
+# MEMO: 夜更かししていない場合の推定処理
 
 
-def normal_sleep_estimation():
+def normal_sleep_estimation(df, time_range):
+    print(df)
     print("夜更かししていない")

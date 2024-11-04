@@ -60,3 +60,18 @@ def custom_converter(obj):
     raise TypeError(f"Type {type(obj)} not serializable")
 # 使い方
 # print(json.dumps(result, default=custom_converter, indent=4))
+
+
+# MEMO: timedelta を datetime.time に変換する関数
+
+
+def convert_timedelta_to_time(s):
+
+    total_seconds = int(s.total_seconds())
+    hours = total_seconds // 3600
+    minutes = (total_seconds % 3600) // 60
+    seconds = total_seconds % 60
+
+    converted_time = time(hours, minutes, seconds)
+
+    return converted_time
