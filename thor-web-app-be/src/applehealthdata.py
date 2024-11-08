@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-applehealthdata.py: Extract data from Apple Health App's export.xml.
+applehealthdata.py: Extract data from Apple Health App"s export.xml.
 
 Copyright (c) 2016 Nicholas J. Radcliffe
 Licence: MIT
@@ -26,22 +26,22 @@ class HealthDataExtractor:
     def __init__(self, binary_data, verbose=True):
         self.verbose = verbose
         self.records = {
-            'StepCount': [],
-            'SleepAnalysis': []
+            "StepCount": [],
+            "SleepAnalysis": []
         }
 
         # バイナリデータを読み込んでXMLを解析
-        self.report('Reading data from binary input... ', end='')
+        self.report("Reading data from binary input... ", end="")
         with io.BytesIO(binary_data) as f:
             self.data = ElementTree.parse(f)
         self.root = self.data.getroot()
         self.nodes = list(self.root)
-        self.report('done')
+        self.report("done")
 
         self.abbreviate_types()
         self.collect_stats()
 
-    def report(self, msg, end='\n'):
+    def report(self, msg, end="\n"):
         if self.verbose:
             print(msg, end=end)
 
@@ -57,9 +57,9 @@ class HealthDataExtractor:
         self.record_types = Counter()
         self.other_types = Counter()
         for record in self.nodes:
-            if record.tag == 'Record':
-                self.record_types[record.attrib['type']] += 1
-            elif record.tag in ('ActivitySummary', 'Workout'):
+            if record.tag == "Record":
+                self.record_types[record.attrib["type"]] += 1
+            elif record.tag in ("ActivitySummary", "Workout"):
                 self.other_types[record.tag] += 1
 
     def collect_stats(self):
@@ -68,17 +68,17 @@ class HealthDataExtractor:
 
     def abbreviate_types(self):
         for node in self.nodes:
-            if node.tag == 'Record' and 'type' in node.attrib:
-                node.attrib['type'] = abbreviate(node.attrib['type'])
+            if node.tag == "Record" and "type" in node.attrib:
+                node.attrib["type"] = abbreviate(node.attrib["type"])
 
     def write_records(self):
-        target_kinds = ['StepCount', 'SleepAnalysis']
+        target_kinds = ["StepCount", "SleepAnalysis"]
         kinds = FIELDS.keys()
 
         for node in self.nodes:
             if node.tag in kinds:
                 attributes = node.attrib
-                kind = attributes['type'] if node.tag == 'Record' else node.tag
+                kind = attributes["type"] if node.tag == "Record" else node.tag
 
                 if abbreviate(kind) not in target_kinds:
                     continue
@@ -90,8 +90,8 @@ class HealthDataExtractor:
     def extract(self):
         self.write_records()
         self.dataframes = {
-            'StepCount': pd.DataFrame(self.records['StepCount']),
-            'SleepAnalysis': pd.DataFrame(self.records['SleepAnalysis'])
+            "StepCount": pd.DataFrame(self.records["StepCount"]),
+            "SleepAnalysis": pd.DataFrame(self.records["SleepAnalysis"])
         }
 
     def get_dataframes(self):
@@ -101,53 +101,53 @@ class HealthDataExtractor:
 
 
 def abbreviate(s, enabled=True):
-    PREFIX_RE = re.compile(r'^HK.*TypeIdentifier(.+)$')
+    PREFIX_RE = re.compile(r"^HK.*TypeIdentifier(.+)$")
     m = re.match(PREFIX_RE, s)
     return m.group(1) if enabled and m else s
 
 
 def format_value(value, datatype):
     if value is None:
-        return ''
-    elif datatype == 's':
+        return ""
+    elif datatype == "s":
         return value
-    elif datatype in ('n', 'd'):
+    elif datatype in ("n", "d"):
         return value
     else:
-        raise KeyError('Unexpected format value: %s' % datatype)
+        raise KeyError("Unexpected format value: %s" % datatype)
 
 
 # 定義されているフィールド
 FIELDS = {
-    'Record': OrderedDict((
-        ('sourceVersion', 's'),
-        ('device', 's'),
-        ('startDate', 'd'),
-        ('endDate', 'd'),
-        ('value', 'n'),
+    "Record": OrderedDict((
+        ("sourceVersion", "s"),
+        ("device", "s"),
+        ("startDate", "d"),
+        ("endDate", "d"),
+        ("value", "n"),
     )),
-    'ActivitySummary': OrderedDict((
-        ('dateComponents', 'd'),
-        ('activeEnergyBurned', 'n'),
-        ('activeEnergyBurnedGoal', 'n'),
-        ('activeEnergyBurnedUnit', 's'),
-        ('appleExerciseTime', 's'),
-        ('appleExerciseTimeGoal', 's'),
-        ('appleStandHours', 'n'),
-        ('appleStandHoursGoal', 'n'),
+    "ActivitySummary": OrderedDict((
+        ("dateComponents", "d"),
+        ("activeEnergyBurned", "n"),
+        ("activeEnergyBurnedGoal", "n"),
+        ("activeEnergyBurnedUnit", "s"),
+        ("appleExerciseTime", "s"),
+        ("appleExerciseTimeGoal", "s"),
+        ("appleStandHours", "n"),
+        ("appleStandHoursGoal", "n"),
     )),
-    'Workout': OrderedDict((
-        ('sourceVersion', 's'),
-        ('device', 's'),
-        ('creationDate', 'd'),
-        ('startDate', 'd'),
-        ('endDate', 'd'),
-        ('workoutActivityType', 's'),
-        ('duration', 'n'),
-        ('durationUnit', 's'),
-        ('totalDistance', 'n'),
-        ('totalDistanceUnit', 's'),
-        ('totalEnergyBurned', 'n'),
-        ('totalEnergyBurnedUnit', 's'),
+    "Workout": OrderedDict((
+        ("sourceVersion", "s"),
+        ("device", "s"),
+        ("creationDate", "d"),
+        ("startDate", "d"),
+        ("endDate", "d"),
+        ("workoutActivityType", "s"),
+        ("duration", "n"),
+        ("durationUnit", "s"),
+        ("totalDistance", "n"),
+        ("totalDistanceUnit", "s"),
+        ("totalEnergyBurned", "n"),
+        ("totalEnergyBurnedUnit", "s"),
     )),
 }
