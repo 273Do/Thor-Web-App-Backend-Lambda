@@ -43,6 +43,9 @@ def data_analyze(step_count_df, sleep_analysis_df, answer):
     # habit:普段の就寝時刻(事前アンケート)3時以前を０，3時以降を1
     estimate_sleep_df = estimate(step_count_df, answer)
 
+    print("推定結果")
+    print(estimate_sleep_df)
+
     return True, None, None
 
 

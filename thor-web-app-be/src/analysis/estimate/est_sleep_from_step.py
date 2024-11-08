@@ -92,7 +92,7 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
             "data_count": sleep_detail[3]
         }
 
-    print(result)
+    return result
 
 
 # MEMO: 夜更かししている場合の推定処理
