@@ -1,6 +1,8 @@
 import pandas as pd
 from datetime import datetime, timedelta
 from auxiliary_functions import convert_timedelta_to_time, get_correction_value
+# from src.analysis.auxiliary_functions import convert_timedelta_to_time, get_correction_value
+
 
 # 精査範囲(平日，休日)
 # 関数setReferenceTimeから取得可能
@@ -66,31 +68,41 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
             sleep_detail = normal_sleep_estimation(
                 day_step_count_df, time_range)
 
-        # 補正値の取得
-        bed_cor, wake_cor = get_correction_value(bed_answer, wake_answer)
-
-        # 補正処理
-        corrected_bed_time = (datetime.combine(
-            datetime.today(), sleep_detail[0]) + bed_cor)
-        corrected_wake_time = (datetime.combine(
-            datetime.today(), sleep_detail[1]) - wake_cor)
-
-        # 睡眠時間を計算
-        if corrected_bed_time > corrected_wake_time:
-            sleep_time = convert_timedelta_to_time(
-                corrected_wake_time - corrected_bed_time + timedelta(days=1))
+        # 結果が無い場合はNoneを設定，空でない場合は解析処理を実行
+        if not sleep_detail:
+            result[date.strftime('%Y/%m/%d')] = {
+                "bed_time": None,
+                "wake_time": None,
+                "sleep_time": None,
+                "staying_up_late": None,
+                "data_count": 0
+            }
         else:
-            sleep_time = convert_timedelta_to_time(
-                corrected_wake_time - corrected_bed_time)
+            # 補正値の取得
+            bed_cor, wake_cor = get_correction_value(bed_answer, wake_answer)
 
-        # 結果を日付をkeyとしたオブジェクトに格納
-        result[date.strftime('%Y/%m/%d')] = {
-            "bed_time": corrected_bed_time.time(),
-            "wake_time": corrected_wake_time.time(),
-            "sleep_time": sleep_time,
-            "staying_up_late": sleep_detail[2],
-            "data_count": sleep_detail[3]
-        }
+            # 補正処理
+            corrected_bed_time = (datetime.combine(
+                datetime.today(), sleep_detail[0]) + bed_cor)
+            corrected_wake_time = (datetime.combine(
+                datetime.today(), sleep_detail[1]) - wake_cor)
+
+            # 睡眠時間を計算
+            if corrected_bed_time > corrected_wake_time:
+                sleep_time = convert_timedelta_to_time(
+                    corrected_wake_time - corrected_bed_time + timedelta(days=1))
+            else:
+                sleep_time = convert_timedelta_to_time(
+                    corrected_wake_time - corrected_bed_time)
+
+            # 結果を日付をkeyとしたオブジェクトに格納
+            result[date.strftime('%Y/%m/%d')] = {
+                "bed_time": corrected_bed_time.time(),
+                "wake_time": corrected_wake_time.time(),
+                "sleep_time": sleep_time,
+                "staying_up_late": sleep_detail[2],
+                "data_count": sleep_detail[3]
+            }
 
     return result
 
@@ -107,42 +119,47 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
     df = df[(df["endDate"].dt.time >= pd.to_datetime(f"{start}:00").time()) &
             (df["startDate"].dt.time <= pd.to_datetime(f"{end}:00").time())]
 
-    # 初期値
-    pre_endDate = pd.to_datetime(f"{start}:00").time()
-    tmp = timedelta()  # 初期値は0秒
+    # データが無い場合は空の配列を返し，そうでない場合は解析処理を実行
+    if df.empty:
+        return []
+    else:
+        # 初期値
+        pre_endDate = pd.to_datetime(f"{start}:00").time()
+        tmp = timedelta()  # 初期値は0秒
 
-    # その日の歩数データごとに処理を繰り返す
-    for _, row in df.iterrows():
+        # その日の歩数データごとに処理を繰り返す
+        for _, row in df.iterrows():
 
-        # pre_endDate > 現在の startDate の場合はスキップ（複数端末への対応）
-        if pre_endDate > row["startDate"].time():
-            continue
+            # pre_endDate > 現在の startDate の場合はスキップ（複数端末への対応）
+            if pre_endDate > row["startDate"].time():
+                continue
 
-        # pre_endDate と startDate の時間差(睡眠時間)を計算
-        pre_end_datetime = datetime.combine(datetime.today(), pre_endDate)
-        start_datetime = datetime.combine(
-            datetime.today(), row["startDate"].time())
+            # pre_endDate と startDate の時間差(睡眠時間)を計算
+            pre_end_datetime = datetime.combine(datetime.today(), pre_endDate)
+            start_datetime = datetime.combine(
+                datetime.today(), row["startDate"].time())
 
-        # 差を計算
-        current_sleep = start_datetime - pre_end_datetime
+            # 差を計算
+            current_sleep = start_datetime - pre_end_datetime
 
-        # 現在の時間差が最大の時間差より大きい場合は更新
-        if current_sleep > tmp:
-            tmp = current_sleep
+            # 現在の時間差が最大の時間差より大きい場合は更新
+            if current_sleep > tmp:
+                tmp = current_sleep
 
-            result = [pre_end_datetime.time(), start_datetime.time()]
+                result = [pre_end_datetime.time(), start_datetime.time()]
 
-        # endDate を更新
-        pre_endDate = row["endDate"].time()
+            # endDate を更新
+            pre_endDate = row["endDate"].time()
 
-        # 外出検知の場合はスキップ
-        if row["cluster"] == cluster_id:
-            break
+            # 外出検知の場合はスキップ
+            if row["cluster"] == cluster_id:
+                break
 
-    # 夜更かししているフラグと推定に使用したデータ数を格納
-    result += [True, len(df)]
+        # 夜更かししているフラグと推定に使用したデータ数を格納
+        result += [True, len(df)]
+        print(result)
 
-    return result
+        return result
 
 
 # MEMO: 夜更かししていない場合の推定処理
@@ -153,31 +170,35 @@ def normal_sleep_estimation(df, time_range):
     # 前日，当日の取得
     unique_dates = df["startDate"].dt.date.unique()
 
-    # 精査するデータの時間範囲の指定
-    bed_end, wake_start, wake_end, bed_start = time_range
-
-    # 精査範囲のデータを取得
-    # 就寝時刻の精査データは前日から当日のデータ
-    bed_df = df[((df["startDate"] >= pd.Timestamp(unique_dates[0].isoformat() + f" {bed_start}:00+09:00")) &
-                 (df["startDate"] <= pd.Timestamp(unique_dates[1].isoformat() + f" {bed_end}:00+09:00")))]
-
-    # 起床時刻の精査データは当日のデータ
-    wake_df = df[((df["startDate"] >= pd.Timestamp(unique_dates[1].isoformat() + f" {wake_start}:00+09:00")) &
-                 (df["startDate"] <= pd.Timestamp(unique_dates[1].isoformat() + f" {wake_end}:00+09:00")))]
-
-    # 就寝時刻の推定
-    if bed_df.empty:
-        bed_time = pd.to_datetime(f"{bed_end}:00").time()
+    # データが無い場合は空の配列を返し，そうでない場合は解析処理を実行
+    if len(unique_dates) < 2:
+        return []
     else:
-        bed_time = bed_df["endDate"].max().time()
+        # 精査するデータの時間範囲の指定
+        bed_end, wake_start, wake_end, bed_start = time_range
 
-    # 起床時刻の推定
-    if wake_df.empty:
-        wake_time = pd.to_datetime(f"{wake_start}:00").time()
-    else:
-        wake_time = wake_df["startDate"].min().time()
+        # 精査範囲のデータを取得
+        # 就寝時刻の精査データは前日から当日のデータ
+        bed_df = df[((df["startDate"] >= pd.Timestamp(unique_dates[0].isoformat() + f" {bed_start}:00+09:00")) &
+                    (df["startDate"] <= pd.Timestamp(unique_dates[1].isoformat() + f" {bed_end}:00+09:00")))]
 
-    # 夜更かししているフラグと推定に使用したデータ数を格納
-    result = [bed_time, wake_time, False, len(df)]
+        # 起床時刻の精査データは当日のデータ
+        wake_df = df[((df["startDate"] >= pd.Timestamp(unique_dates[1].isoformat() + f" {wake_start}:00+09:00")) &
+                      (df["startDate"] <= pd.Timestamp(unique_dates[1].isoformat() + f" {wake_end}:00+09:00")))]
+
+        # 就寝時刻の推定
+        if bed_df.empty:
+            bed_time = pd.to_datetime(f"{bed_end}:00").time()
+        else:
+            bed_time = bed_df["endDate"].max().time()
+
+        # 起床時刻の推定
+        if wake_df.empty:
+            wake_time = pd.to_datetime(f"{wake_start}:00").time()
+        else:
+            wake_time = wake_df["startDate"].min().time()
+
+        # 夜更かししているフラグと推定に使用したデータ数を格納
+        result = [bed_time, wake_time, False, len(df)]
 
     return result
