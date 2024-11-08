@@ -11,7 +11,7 @@ from estimate.estimate import estimate
 # データ解析用のメイン関数
 
 
-def data_analyze(step_count_df, sleep_analysis_df, habit):
+def data_analyze(step_count_df, sleep_analysis_df, answer):
 
     # "startDate" と "endDate" の列を datetime 型に変換
     for df in [step_count_df, sleep_analysis_df]:
@@ -41,7 +41,7 @@ def data_analyze(step_count_df, sleep_analysis_df, habit):
 
     # 睡眠推定処理
     # habit:普段の就寝時刻(事前アンケート)3時以前を０，3時以降を1
-    estimate_sleep_df = estimate(step_count_df, habit)
+    estimate_sleep_df = estimate(step_count_df, answer)
 
     return True, None, None
 
@@ -61,4 +61,4 @@ sa_df = pd.read_csv("./test/SleepAnalysisCP.csv", low_memory=False)
 sc_df = sc_df[["sourceVersion", "device", "startDate", "endDate", "value"]]
 sa_df = sa_df[["sourceVersion", "device", "startDate", "endDate", "value"]]
 
-data_analyze(sc_df, sa_df, 0)
+data_analyze(sc_df, sa_df, [0, 3, 0])

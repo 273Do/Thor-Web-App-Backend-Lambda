@@ -8,8 +8,8 @@ def setReferenceTime(weekday_probability, holiday_probability):
     result = []
 
     # データのパスを指定
-    csv_file_path = ["./test/nhk_investigation_data/sleep_data_weekday.csv",
-                     "./test/nhk_investigation_data/sleep_data_holiday.csv"]
+    csv_file_path = ["./statistical_data/nhk_investigation_data/sleep_data_weekday.csv",
+                     "./statistical_data/nhk_investigation_data/sleep_data_holiday.csv"]
 
     # 平日/土日の基準/精査先のパーセントに対する時間を設定する処理
     for i, path in enumerate(csv_file_path):
