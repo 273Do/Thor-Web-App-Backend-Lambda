@@ -3,6 +3,7 @@ boto3
 botocore
 pandas
 scikit-learn
+openai
 
 python-dotenv
 python-dateutil

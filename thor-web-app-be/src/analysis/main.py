@@ -3,9 +3,11 @@ import pandas as pd
 from auxiliary_functions import narrow_the_data, filter_data
 from ML.clustering import clustering
 from estimate.estimate import estimate
+from open_api_functions import generate_feedback
 # from src.analysis.auxiliary_functions import narrow_the_data, filter_data
 # from src.analysis.ML.clustering import clustering
 # from src.analysis.estimate.estimate import estimate
+# from src.open_api_functions import generate_feedback
 
 
 # データ解析用のメイン関数
@@ -47,7 +49,10 @@ def data_analyze(step_count_df, sleep_analysis_df, answer):
     print("推定結果")
     print(estimate_sleep_df)
 
-    return True, None, None
+    # DEBUG: ChatGPTによるフィードバック生成
+    feedback = generate_feedback(estimate_sleep_df, cluster_stats)
+
+    return True, None, None, None
 
 
 # テスト用のデータを読み込む
