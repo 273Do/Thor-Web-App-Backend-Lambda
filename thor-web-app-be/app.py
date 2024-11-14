@@ -4,6 +4,8 @@ from src.s3_functions import get_fromS3
 from src.unzip import unzip
 from src.extract_data import extract_data
 from src.analysis.main import data_analyze
+# DEBUG: デバックが終わればsrcに戻す
+from src.analysis.open_api_functions import generate_feedback
 
 # FlaskのWebアプリ作成
 app = Flask(__name__)
@@ -65,14 +67,29 @@ def analyze():
         return {"status": "failed", "error_message": error_message}, 500
 
     # 解析処理
-    success, error_message, analysis_results = data_analyze(
+    success, error_message, analysis_results, cluster_stats = data_analyze(
         step_count_df, sleep_analysis_df, answer)
+
+    # ChatGPTによるフィードバック生成
+    # DEBUG: mainのgenerate_feedback関数は消しておく
+    success, error_message, feedback = generate_feedback(
+        analysis_results, cluster_stats)
     if not success:
         return {"status": "failed", "error_message": error_message}, 500
 
+    print("解析結果")
+    print(step_count_df)
+    print(analysis_results)
+    print(cluster_stats)
+    print(feedback)
+
     return jsonify({"message": "successfully",
-                    "body": json.dumps(
+                    "body":
                         {
+                            "result": analysis_results,
+                            # "step_count_df": step_count_df,
+                            "cluster_stats": cluster_stats,
+                            "feedback": feedback,
                             "UUID": UUID
                         }
-                    )}), 200
+                    }), 200
