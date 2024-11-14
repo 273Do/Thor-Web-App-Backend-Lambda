@@ -72,13 +72,24 @@ def analyze():
 
     # ChatGPTによるフィードバック生成
     # DEBUG: mainのgenerate_feedback関数は消しておく
-    feedback = generate_feedback(analysis_results, cluster_stats)
+    success, error_message, feedback = generate_feedback(
+        analysis_results, cluster_stats)
     if not success:
         return {"status": "failed", "error_message": error_message}, 500
 
+    print("解析結果")
+    print(step_count_df)
+    print(analysis_results)
+    print(cluster_stats)
+    print(feedback)
+
     return jsonify({"message": "successfully",
-                    "body": json.dumps(
+                    "body":
                         {
+                            "result": analysis_results,
+                            # "step_count_df": step_count_df,
+                            "cluster_stats": cluster_stats,
+                            "feedback": feedback,
                             "UUID": UUID
                         }
-                    )}), 200
+                    }), 200

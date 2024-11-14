@@ -1,7 +1,7 @@
 import pandas as pd
 from datetime import datetime, timedelta
-from auxiliary_functions import convert_timedelta_to_time, get_correction_value
-# from src.analysis.auxiliary_functions import convert_timedelta_to_time, get_correction_value
+# from auxiliary_functions import convert_timedelta_to_time, get_correction_value
+from src.analysis.auxiliary_functions import convert_timedelta_to_time, get_correction_value
 
 
 # 精査範囲(平日，休日)
@@ -18,6 +18,9 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
     # データの日付範囲を設定
     unique_dates = pd.date_range(
         start=df["startDate"].iloc[0].date(), end=df["startDate"].iloc[-1].date()).date
+
+    # 補正値の取得
+    bed_cor, wake_cor = get_correction_value(bed_answer, wake_answer)
 
     # 結果格納用の辞書
     result = {}
@@ -78,8 +81,6 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
                 "data_count": 0
             }
         else:
-            # 補正値の取得
-            bed_cor, wake_cor = get_correction_value(bed_answer, wake_answer)
 
             # 補正処理
             corrected_bed_time = (datetime.combine(
@@ -97,9 +98,9 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
 
             # 結果を日付をkeyとしたオブジェクトに格納
             result[date.strftime('%Y/%m/%d')] = {
-                "bed_time": corrected_bed_time.time(),
-                "wake_time": corrected_wake_time.time(),
-                "sleep_time": sleep_time,
+                "bed_time": corrected_bed_time.time().strftime("%H:%M:%S"),
+                "wake_time": corrected_wake_time.time().strftime("%H:%M:%S"),
+                "sleep_time": sleep_time.strftime("%H:%M:%S"),
                 "staying_up_late": sleep_detail[2],
                 "data_count": sleep_detail[3]
             }

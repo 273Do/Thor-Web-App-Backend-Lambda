@@ -1,6 +1,8 @@
 from dateutil.relativedelta import relativedelta
 from datetime import time
 import pandas as pd
+import json
+import os
 
 # 補助関数を定義するファイル
 
@@ -80,17 +82,30 @@ def convert_timedelta_to_time(s):
 
 
 # 回答から補正値を取得する関数
+
+
 def get_correction_value(bed_answer, wake_answer):
 
-    # 就寝時の補正値
-    bed_cor_list = [56, 104, 90, 99, 102]
+    # 補正値データのパス
+    current_dir = os.path.dirname(__file__)
+    path = f"{current_dir}/statistical_data/data_categorization.json"
 
-    # 起床時の補正値
-    wake_cor_list = [57, 90, 66]
+    # 補正値データの読み込み
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # 就寝時の補正値をリストに変換
+    bed_cor_list = [int(value)
+                    for value in data["bed_cor"].values()]
+
+    # 起床時の補正値をリストに変換
+    wake_cor_list = [int(value)
+                     for value in data["wake_cor"].values()]
 
     # 選択した補正値を取得
     bed_minutes = bed_cor_list[bed_answer]
     wake_minutes = wake_cor_list[wake_answer]
+    print(bed_minutes, wake_minutes)
 
     # 補正値を取得
     bed_time = pd.to_timedelta(bed_minutes, unit='m')

@@ -11,16 +11,17 @@ client = OpenAI()
 
 def generate_feedback(estimate_sleep_df, cluster_stats):
 
-    res = client.chat.completions.create(
-        model="gpt-4-turbo",
-        # 出力フォーマットを書いたテキストまたはmdファイルを指定する
-        messages=[]
-    )
+    try:
+        # ChatGPTによるフィードバック生成
+        res = client.chat.completions.create(
+            model="gpt-4-turbo",  # gpt-4-turboを使用
+            # 出力フォーマットを書いたテキストまたはmdファイルを指定する
+            messages=[]
+        )
 
-    # フィードバックを取得
-    feedback = res.choices[0].message.content
-    print(feedback)
-    return feedback
+        # フィードバックを取得
+        feedback = res.choices[0].message.content
+        return True, None, feedback
 
-
-# generate_feedback(None, None)
+    except Exception as e:
+        return False, str(e), None
