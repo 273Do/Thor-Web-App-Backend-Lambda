@@ -1,8 +1,8 @@
 # MEMO: コンテナ内で実行する場合は以下のパスを使用
-from ML.staying_up_late_model import create_feature_value, staying_up_late_prediction
-from estimate.est_sleep_from_step import estimate_sleep_from_step
-# from src.analysis.ML.staying_up_late_model import create_feature_value, staying_up_late_prediction
-# from src.analysis.estimate.est_sleep_from_step import estimate_sleep_from_step
+# from ML.staying_up_late_model import create_feature_value, staying_up_late_prediction
+# from estimate.est_sleep_from_step import estimate_sleep_from_step
+from src.analysis.ML.staying_up_late_model import create_feature_value, staying_up_late_prediction
+from src.analysis.estimate.est_sleep_from_step import estimate_sleep_from_step
 
 # 歩数から睡眠を推定するメイン処理
 

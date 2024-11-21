@@ -1,8 +1,7 @@
 import pandas as pd
 from datetime import datetime, timedelta
-from auxiliary_functions import convert_timedelta_to_time, get_correction_value
-# from src.analysis.auxiliary_functions import convert_timedelta_to_time, get_correction_value
-
+# from auxiliary_functions import convert_timedelta_to_time, get_correction_value
+from src.analysis.auxiliary_functions import convert_timedelta_to_time, get_correction_value
 
 # 精査範囲(平日，休日)
 # 関数setReferenceTimeから取得可能
@@ -72,8 +71,6 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
             sleep_detail = normal_sleep_estimation(
                 day_step_count_df, time_range)
 
-        print(sleep_detail)
-
         # 結果が無い場合はNoneを設定，空でない場合は解析処理を実行
         if not sleep_detail:
             result[date.strftime('%Y/%m/%d')] = {
@@ -108,6 +105,8 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
                 "data_count": sleep_detail[3]
             }
 
+            # print(result[date.strftime('%Y/%m/%d')])
+
     return result
 
 
@@ -119,16 +118,28 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
     # 精査するデータの時間範囲の指定
     start, *_, end = time_range[0], time_range[3]
 
+    # 精査初期値は3時より前を見て最初に観測されたステップのendDate時間
+    initial_time_df = df[(df["endDate"].dt.time >= pd.to_datetime("00:00:00").time()) & (
+        df["endDate"].dt.time <= pd.to_datetime(f"{start}:00").time())]
+    # データが無い場合は初期値を03:00に設定
+    if initial_time_df.empty:
+        pre_endDate = pd.to_datetime(f"{start}:00").time()
+    else:
+        # print(initial_time_df[['endDate', 'value']])
+        pre_endDate = initial_time_df["endDate"].max().time()
+
+    # print("初期値", pre_endDate)
+    # sys.exit()
+
     # 精査範囲のデータを取得
-    df = df[(df["endDate"].dt.time >= pd.to_datetime(f"{start}:00").time()) &
+    df = df[(df["endDate"].dt.time >= pd.to_datetime(f"{pre_endDate}").time()) &
             (df["startDate"].dt.time <= pd.to_datetime(f"{end}:00").time())]
 
     # データが無い場合は空の配列を返し，そうでない場合は解析処理を実行
     if df.empty:
         return []
     else:
-        # 初期値
-        pre_endDate = pd.to_datetime(f"{start}:00").time()
+        # 時間差の初期値
         tmp = timedelta()  # 初期値は0秒
 
         # その日の歩数データごとに処理を繰り返す
