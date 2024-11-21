@@ -1,7 +1,7 @@
 import pandas as pd
 from datetime import datetime, timedelta
-# from auxiliary_functions import convert_timedelta_to_time, get_correction_value
-from src.analysis.auxiliary_functions import convert_timedelta_to_time, get_correction_value
+from auxiliary_functions import convert_timedelta_to_time, get_correction_value
+# from src.analysis.auxiliary_functions import convert_timedelta_to_time, get_correction_value
 
 
 # 精査範囲(平日，休日)
@@ -40,12 +40,12 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
         is_weekday = date.weekday() < 5
         if (is_weekday):
             # 平日の場合
-            # print(i, date, "平日")
+            print(i, date, "平日")
             time_range = time_range_list[0]
 
         else:
             # 休日の場合
-            # print(i, date, "休日")
+            print(i, date, "休日")
             time_range = time_range_list[1]
 
         # 歩数から睡眠を推定
@@ -57,8 +57,9 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
                 "startDate")
 
             # 推定処理を実行して結果を取得
+            # MEMO: 外出時のcluster_idは2
             sleep_detail = staying_up_late_sleep_estimation(
-                day_step_count_df, time_range, 1)
+                day_step_count_df, time_range, 2)
 
         else:
             # 夜更かししていない場合の推定処理
@@ -70,6 +71,8 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
             # 推定処理を実行して結果を取得
             sleep_detail = normal_sleep_estimation(
                 day_step_count_df, time_range)
+
+        print(sleep_detail)
 
         # 結果が無い場合はNoneを設定，空でない場合は解析処理を実行
         if not sleep_detail:
@@ -158,7 +161,6 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
 
         # 夜更かししているフラグと推定に使用したデータ数を格納
         result += [True, len(df)]
-        print(result)
 
         return result
 
