@@ -31,3 +31,27 @@ def get_fromS3(file_dir):
         return True, None, zip_file
     except Exception as e:
         return False, str(e), None
+
+
+# s3にアップロードされたzipファイルをディレクトリごと削除
+
+
+def delete_fromS3(dir):
+    try:
+        # s3からzipファイルをディレクトリごと削除
+        objects = s3.list_objects_v2(Bucket=bucket_name, Prefix=dir)
+
+        if "Contents" in objects:
+            # 削除するオブジェクトのキーをリストアップ
+            keys_to_delete = [{"Key": obj["Key"]}
+                              for obj in objects["Contents"]]
+
+            # オブジェクトを一括削除
+            s3.delete_objects(
+                Bucket=bucket_name,
+                Delete={"Objects": keys_to_delete, "Quiet": True}
+            )
+
+        return True, None
+    except Exception as e:
+        return False, str(e)
