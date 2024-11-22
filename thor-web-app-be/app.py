@@ -1,10 +1,8 @@
 from flask import Flask, jsonify, request
-import json
-from src.s3_functions import get_fromS3
+from src.s3_functions import get_fromS3, delete_fromS3
 from src.unzip import unzip
 from src.extract_data import extract_data
 from src.analysis.main import data_analyze
-# DEBUG: デバックが終わればsrcに戻す
 from src.analysis.open_api_functions import generate_feedback
 
 # FlaskのWebアプリ作成
@@ -52,13 +50,15 @@ def analyze():
     if not success:
         return {"status": "failed", "error_message": error_message}, 500
 
+    # 3からディレクトリ(ファイル)を削除
+    success, error_message = delete_fromS3(UUID)
+    if not success:
+        return {"status": "failed", "error_message": error_message}, 500
+
     # zipファイルを解凍
     success, error_message, export_xml = unzip(zip_file)
     if not success:
         return {"status": "failed", "error_message": error_message}, 500
-
-    # 3からファイルを削除
-    # ここに削除処理を追加する
 
     # データの抽出
     success, error_message, step_count_df, sleep_analysis_df = extract_data(
@@ -69,9 +69,10 @@ def analyze():
     # 解析処理
     success, error_message, analysis_results, cluster_stats = data_analyze(
         step_count_df, sleep_analysis_df, answer)
+    if not success:
+        return {"status": "failed", "error_message": error_message}, 500
 
     # ChatGPTによるフィードバック生成
-    # DEBUG: mainのgenerate_feedback関数は消しておく
     success, error_message, feedback = generate_feedback(
         analysis_results, cluster_stats)
     if not success:

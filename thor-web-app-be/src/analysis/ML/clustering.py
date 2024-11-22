@@ -1,11 +1,12 @@
-import os
+import sys
+import numpy as np
 from sklearn.cluster import KMeans
 
-# 歩数のクラスタリングを行う関数
+
+# # 歩数のクラスタリングを行う関数
 
 
 def clustering(df):
-
     # 歩数カラムのみを抽出
     value_df = df.iloc[:, 3:]
 
@@ -18,19 +19,28 @@ def clustering(df):
     # dfにクラスタリング結果を追加
     df["cluster"] = labels
 
-    # 重心を計算
+    # セントロイドを取得
     centroids = kmeans_model.cluster_centers_
-    # 部屋：0,家：1,外：2 ここは毎回変わるので統一する必要がある
+
+    # セントロイドの値が小さい順に並び替えたインデックスを取得
+    sorted_indices = np.argsort(centroids.flatten())
+    print(sorted_indices)
+
+    # クラスタ番号を再マッピングする辞書を作成
+    remap_clusters = {old: new for new, old in enumerate(sorted_indices)}
+    print(remap_clusters)
+    # 再マッピングされたクラスタ番号をデータフレームに適用
+    df["cluster"] = df["cluster"].map(remap_clusters)
 
     # 各クラスタから最大値と最小値を取得し，配列に格納
     cluster_stats = []
-    for cluster in df["cluster"].unique():
+    for cluster in sorted_indices:
         cluster_stats.append(
             {
-                "cluster": cluster.item(),
-                "centroids": centroids[cluster].item(),
-                "min": df[df["cluster"] == cluster]["value"].min().item(),
-                "max": df[df["cluster"] == cluster]["value"].max().item()
+                "cluster": remap_clusters[cluster],
+                "centroids": round(centroids[cluster].item(), 2),
+                "min": df[df["cluster"] == remap_clusters[cluster]]["value"].min().item(),
+                "max": df[df["cluster"] == remap_clusters[cluster]]["value"].max().item()
             }
         )
 

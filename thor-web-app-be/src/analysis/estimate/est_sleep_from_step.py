@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 # from auxiliary_functions import convert_timedelta_to_time, get_correction_value
 from src.analysis.auxiliary_functions import convert_timedelta_to_time, get_correction_value
 
-
 # 精査範囲(平日，休日)
 # 関数setReferenceTimeから取得可能
 time_range_list = [["3:00", "4:15", "12:00", "21:00"],
@@ -40,12 +39,12 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
         is_weekday = date.weekday() < 5
         if (is_weekday):
             # 平日の場合
-            # print(i, date, "平日")
+            print(i, date, "平日")
             time_range = time_range_list[0]
 
         else:
             # 休日の場合
-            # print(i, date, "休日")
+            print(i, date, "休日")
             time_range = time_range_list[1]
 
         # 歩数から睡眠を推定
@@ -57,8 +56,9 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
                 "startDate")
 
             # 推定処理を実行して結果を取得
+            # MEMO: 外出時のcluster_idは2
             sleep_detail = staying_up_late_sleep_estimation(
-                day_step_count_df, time_range, 1)
+                day_step_count_df, time_range, 2)
 
         else:
             # 夜更かししていない場合の推定処理
@@ -105,6 +105,8 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
                 "data_count": sleep_detail[3]
             }
 
+            # print(result[date.strftime('%Y/%m/%d')])
+
     return result
 
 
@@ -116,16 +118,28 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
     # 精査するデータの時間範囲の指定
     start, *_, end = time_range[0], time_range[3]
 
+    # 精査初期値は3時より前を見て最初に観測されたステップのendDate時間
+    initial_time_df = df[(df["endDate"].dt.time >= pd.to_datetime("00:00:00").time()) & (
+        df["endDate"].dt.time <= pd.to_datetime(f"{start}:00").time())]
+    # データが無い場合は初期値を03:00に設定
+    if initial_time_df.empty:
+        pre_endDate = pd.to_datetime(f"{start}:00").time()
+    else:
+        # print(initial_time_df[['endDate', 'value']])
+        pre_endDate = initial_time_df["endDate"].max().time()
+
+    # print("初期値", pre_endDate)
+    # sys.exit()
+
     # 精査範囲のデータを取得
-    df = df[(df["endDate"].dt.time >= pd.to_datetime(f"{start}:00").time()) &
+    df = df[(df["endDate"].dt.time >= pd.to_datetime(f"{pre_endDate}").time()) &
             (df["startDate"].dt.time <= pd.to_datetime(f"{end}:00").time())]
 
     # データが無い場合は空の配列を返し，そうでない場合は解析処理を実行
     if df.empty:
         return []
     else:
-        # 初期値
-        pre_endDate = pd.to_datetime(f"{start}:00").time()
+        # 時間差の初期値
         tmp = timedelta()  # 初期値は0秒
 
         # その日の歩数データごとに処理を繰り返す
@@ -158,7 +172,6 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
 
         # 夜更かししているフラグと推定に使用したデータ数を格納
         result += [True, len(df)]
-        print(result)
 
         return result
 
