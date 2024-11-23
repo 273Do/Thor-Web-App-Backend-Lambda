@@ -1,112 +1,76 @@
-<!--
-title: 'Serverless Framework Python Flask API on AWS'
-description: 'This template demonstrates how to develop and deploy a simple Python Flask API running on AWS Lambda using the Serverless Framework.'
-layout: Doc
-framework: v4
-platform: AWS
-language: Python
-priority: 2
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, Inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
--->
+<p align="center">
+<img width="120" src="./imgs/Thor.png">
+</p>
 
-# Serverless Framework Python Flask API on AWS
+# Thor-Web-App-BE
 
-This template demonstrates how to develop and deploy a simple Python Flask API service running on AWS Lambda using the Serverless Framework.
+- 本 web アプリは，本研究のアルゴリズムや推定処理を誰でも利用できるようにするとともに，結果を AI を用いてフィードバックできるようにするものである．また，ローカルで解析を行うこともできる．
 
-This template configures a single function, `api`, which is responsible for handling all incoming requests thanks to configured `http` events. To learn more about `http` event configuration options, please refer to [http event docs](https://www.serverless.com/framework/docs/providers/aws/events/apigateway/). As the events are configured in a way to accept all incoming requests, `Flask` framework is responsible for routing and handling requests internall y. The implementation takes advantage of `serverless-wsgi`, which allows you to wrap WSGI applications such as Flask apps. To learn more about `serverless-wsgi`, please refer to corresponding [GitHub repository](https://github.com/logandk/serverless-wsgi). Additionally, the template relies on `serverless-python-requirements` plugin for packaging dependencies from `requirements.txt` file. For more details about `serverless-python-requirements` configuration, please refer to corresponding [GitHub repository](https://github.com/UnitedIncome/serverless-python-requirements).
+- 本リポジトリでは，アプリの目に見えない処理の部分を実装しており，基本的には全て AWS 上で動作するようになっている．環境変数さえ用意すればローカルでも動かすことができる．関数単位で細かく処理を分けているため，研究ソースコードよりかなりわかりやすい．
 
-## Usage
+- [フロントエンドリポジトリ](https://github.com/273Do/Thor-Web-App-Frontend)
 
-### Deployment
+## 🚚 開発環境・使用技術・ツール
 
-This example is made to work with the Serverless Framework dashboard, which includes advanced features such as CI/CD, monitoring, metrics, etc.
+<!-- <H3>x日間(1日あたりy~z時間)</H3> -->
 
-In order to deploy with dashboard, you need to first login with:
+<H3>BE
+<div>
+<img alt="Python" src="https://img.shields.io/badge/-Python-000?style=flat&logo=Python&logoColor=3776AB" />
+ <img alt="Flask" src="https://img.shields.io/badge/-Flask-000?style=flat&logo=flask&logoColor=FFFFFF" />
+</div>
 
-```
-serverless login
-```
+<h3>環境，コード管理
+<div>
+ <img alt="Docker" src="https://img.shields.io/badge/-Docker-000?style=flat&logo=Docker&logoColor=46a2f1" />
+ <img alt="GitHub" src="https://img.shields.io/badge/-GitHub-000?style=flat&logo=GitHub&logoColor=FFFFFF" />
+<img alt="Git" src="https://img.shields.io/badge/-Git-000?style=flat&logo=Git&logoColor=F05032" />
+</div>
 
-install dependencies with:
+<h3>外部サービス
+<div>
+ <img alt="Google Docs" src="https://img.shields.io/badge/-Google Docs-000?style=flat&logo=googledocs&logoColor=4285F4" />
+ <img alt="OpenAI API" src="https://img.shields.io/badge/-OpenAI API-000?style=flat&logo=openai&logoColor=ffffff" />
+</div>
 
-```
-npm install
-```
+<h3>ストレージ，デプロイ
+<div>
+<img alt="AWS S3" src="https://img.shields.io/badge/-AWS S3-000?style=flat&logo=amazons3&logoColor=569A31" />
+  <img alt="AWS Lambda" src="https://img.shields.io/badge/-AWS Lambda-000?style=flat&logo=awslambda&logoColor=FF9900" />
+  <img alt="AWS EC2" src="https://img.shields.io/badge/-AWS EC2-000?style=flat&logo=amazonec2&logoColor=FF9900" />
+  <img alt="Serverless" src="https://img.shields.io/badge/-Serverless-000?style=flat&logo=serverless&logoColor=FD5750" />
+</div>
 
-and
+<h3>ロゴ
+<div>
+  <img alt="Blender" src="https://img.shields.io/badge/-Blender-000?style=flat&logo=Blender&logoColor=E87D0D" />
+  <img alt="Adobe Photoshop" src="https://img.shields.io/badge/-Adobe Photoshop-000?style=flat&logo=Adobe Photoshop&logoColor=31A8FF" />
+</div>
 
-```
-pip install -r requirements.txt
-```
+## 🚚 システム構成図
 
-and then perform deployment with:
+<img src="./imgs/system_architecture.png">
 
-```
-serverless deploy
-```
+## 🚚 動作確認済み端末・OS
 
-After running deploy, you should see output similar to:
+- macOS Sequoia 15.0
+- AWS Lmabda，AWS EC2
 
-```
-Deploying "aws-python-flask-api" to stage "dev" (us-east-1)
+## 🚚 アプリ構築・起動
 
-Using Python specified in "runtime": python3.12
+1. Git と Docker Desktop をインストールしてください．
 
-Packaging Python WSGI handler...
+2. 任意のディレクトリで`git clone https://github.com/273Do/Thor.git`を実行してください．
+3. 作成されたプロジェクトの`Dockerfile`が存在するディレクトリで，`docker compose build`を実行してください．
 
-✔ Service deployed to stack aws-python-flask-api-dev (104s)
+4. 引き続き，`docker compose up -d`を実行してください．
 
-endpoints:
-  ANY - https://xxxxxxxxxe.execute-api.us-east-1.amazonaws.com/dev/
-  ANY - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/dev/{proxy+}
-functions:
-  api: aws-python-flask-api-dev-api (41 MB)
+5. `docker exec -it thor_web_app_be /bin/bash`を実行してコンテナの中に入ってください．以降はコンテナ内で python3 コマンドを実行していただけます．必要なライブラリは requirements.txt に記載されているものが自動でインストールされますが，必要なライブラリが無いとエラーが吐かれた場合は`pip3`で手動でインストールしてください．
 
-```
+6. コンテナから抜ける場合は`exit`を実行，コンテナを終了させる場合は`docker compose down`を実行してください．
 
-_Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [http event docs](https://www.serverless.com/framework/docs/providers/aws/events/apigateway/).
+## 🚚 各種関数の説明
 
-### Invocation
+## 🚚 免責事項
 
-After successful deployment, you can call the created application via HTTP:
-
-```
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/dev/
-```
-
-Which should result in the following response:
-
-```json
-{ "message": "Hello from root!" }
-```
-
-Calling the `/hello` path with:
-
-```
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/dev/hello
-```
-
-Should result in the following response:
-
-```json
-{ "message": "Hello from path!" }
-```
-
-### Local development
-
-Thanks to capabilities of `serverless-wsgi`, it is also possible to run your application locally, however, in order to do that, you will need to first install `werkzeug` dependency, as well as all other dependencies listed in `requirements.txt`. It is recommended to use a dedicated virtual environment for that purpose. You can install all needed dependencies with the following commands:
-
-```
-pip install werkzeug
-pip install -r requirements.txt
-```
-
-At this point, you can run your application locally with the following command:
-
-```
-serverless wsgi serve
-```
-
-For additional local development capabilities of `serverless-wsgi` plugin, please refer to corresponding [GitHub repository](https://github.com/logandk/serverless-wsgi).
+この作成物および同梱物を使用したことによって生じたすべての障害・損害・不具合等に関しては，私と私の関係者および私の所属するいかなる団体・組織とも，一切の責任を負いません．各自の責任においてご使用ください．
