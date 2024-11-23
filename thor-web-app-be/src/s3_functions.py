@@ -19,6 +19,28 @@ region = os.environ["AWS_DEFAULT_REGION"]
 s3 = boto3.client("s3", region_name=region,
                   config=Config(signature_version="s3v4"))
 
+# s3のプリサインドurlの発行処理
+
+
+def issue_presigned_url(tmp_file):
+    try:
+        # プリサインドurlの発行
+        presigned_url = s3.generate_presigned_url(
+            ClientMethod='put_object',
+            Params={
+                'Bucket': bucket_name,
+                'Key': tmp_file,
+                'ContentType': 'application/zip'
+            },
+            ExpiresIn=duration_seconds,
+            HttpMethod='PUT'
+        )
+
+        return True, None, presigned_url
+    except Exception as e:
+        return False, str(e), None
+
+
 # s3にアップロードされたzipファイルを取得
 
 
