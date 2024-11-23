@@ -10,3 +10,4 @@ __pycache__/
 statistical_data/
 test/
 models/
+service_account/

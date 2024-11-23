@@ -4,11 +4,11 @@ import json
 # from auxiliary_functions import narrow_the_data, filter_data
 # from ML.clustering import clustering
 # from estimate.estimate import estimate
-# from open_api_functions import generate_feedback
+# from ..open_api_functions import generate_feedback
 from src.analysis.auxiliary_functions import narrow_the_data, filter_data
 from src.analysis.ML.clustering import clustering
 from src.analysis.estimate.estimate import estimate
-from src.analysis.open_api_functions import generate_feedback
+from src.open_api_functions import generate_feedback
 
 
 # データ解析用のメイン関数
@@ -64,6 +64,7 @@ def data_analyze(step_count_df, sleep_analysis_df, answer):
 # テスト用のデータを読み込む
 # CSVファイルを読み込む
 
+# DEBUG: ローカルで試すときに使用
 # # MEMO: コンテナ内で実行する場合は以下の2列のパスを使用
 # sc_df = pd.read_csv("./test/StepCountCP.csv", low_memory=False)
 # sa_df = pd.read_csv("./test/SleepAnalysisCP.csv", low_memory=False)
