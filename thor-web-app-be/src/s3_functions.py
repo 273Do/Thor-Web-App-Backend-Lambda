@@ -7,17 +7,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # s3のバケット名
-bucket_name = os.environ['AWS_S3_BUCKET_NAME']
+bucket_name = os.environ["AWS_S3_BUCKET_NAME"]
 
 # プリサインドurlの有効期間
-duration_seconds = int(os.environ['DURATION_SECONDS'])
+duration_seconds = int(os.environ["DURATION_SECONDS"])
 
 # リージョンの設定
-region = os.environ['AWS_DEFAULT_REGION']
+region = os.environ["AWS_DEFAULT_REGION"]
 
 # s3のクライアントを作成
-s3 = boto3.client('s3', region_name=region,
-                  config=Config(signature_version='s3v4'))
+s3 = boto3.client("s3", region_name=region,
+                  config=Config(signature_version="s3v4"))
 
 # s3のプリサインドurlの発行処理
 
@@ -48,8 +48,32 @@ def get_fromS3(file_dir):
     try:
         # s3からzipファイルを取得
         s3_object = s3.get_object(Bucket=bucket_name, Key=file_dir)
-        zip_file = s3_object['Body'].read()
+        zip_file = s3_object["Body"].read()
 
         return True, None, zip_file
     except Exception as e:
         return False, str(e), None
+
+
+# s3にアップロードされたzipファイルをディレクトリごと削除
+
+
+def delete_fromS3(dir):
+    try:
+        # s3からzipファイルをディレクトリごと削除
+        objects = s3.list_objects_v2(Bucket=bucket_name, Prefix=dir)
+
+        if "Contents" in objects:
+            # 削除するオブジェクトのキーをリストアップ
+            keys_to_delete = [{"Key": obj["Key"]}
+                              for obj in objects["Contents"]]
+
+            # オブジェクトを一括削除
+            s3.delete_objects(
+                Bucket=bucket_name,
+                Delete={"Objects": keys_to_delete, "Quiet": True}
+            )
+
+        return True, None
+    except Exception as e:
+        return False, str(e)
