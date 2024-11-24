@@ -58,6 +58,8 @@
 
 ## 🚚 アプリ構築・起動
 
+> 環境構築について記載しています．本番協でも基本的には同じです．
+
 <details><summary>環境構築</summary>
 
 ### 環境構築
@@ -66,15 +68,23 @@
 
 2. 任意のディレクトリで`git clone https://github.com/273Do/Thor.git`を実行してください．
 
-3. .env ファイルを作成し，環境変数を設定してください．
+3. ルートディレクトリと`thor-web-app-beディレクトリ`に.env ファイルを作成し，環境変数を設定してください．(内容については開発者に問い合わせください．)
 4. 作成されたプロジェクトの`Dockerfile`が存在するディレクトリで，`docker compose build`でイメージを作成してください．
 
 5. 引き続き，`docker compose up -d`でコンテナを起動してください．
 
-6. `docker exec -it thor_web_app_be /bin/bash`を実行してコンテナの中に入ってください．以降はコンテナ内で python3 コマンドを実行していただけます．必要なライブラリは requirements.txt に記載されているものが自動でインストールされますが，必要なライブラリが無いとエラーが吐かれた場合は`pip3`で手動でインストールしてください．
+6. `docker exec -it thor_web_app_be /bin/bash`を実行してコンテナの中に入ってください．
 
-7. コンテナから抜ける場合は`exit`を実行，コンテナを終了させる場合は`docker compose down`を実行してください．
+7.`aws configure`で aws cli の設定をしてください．
+
+8. 以降はコンテナ内で python3 コマンドを実行していただけます．必要なライブラリは requirements.txt に記載されているものが自動でインストールされますが，必要なライブラリが無いとエラーが吐かれた場合は`pip3`で手動でインストールしてください．
+
+9. コンテナから抜ける場合は`exit`を実行，コンテナを終了させる場合は`docker compose down`を実行してください．
 </details>
+
+## 🚚 API 利用手順
+
+> API の利用手順について記載しています．本番では`http://localhost:5000`ではなくエンドポイントを使用してください．
 
 <details><summary>ローカル環境でのアプリの実行</summary>
 
@@ -82,35 +92,83 @@
     VSCode の拡張機能版 Postman，Thunder Client などを入れるといいです．
 
 2.  アプリのリクエスト順序通りに API を叩いていきます．
-    > 1.  署名付き url を発行  
-    >      Method：POST  
-    >      URL：http://localhost:5000/get_presigned_url  
-    >      Header：Content-Type: application/json
-    >     Body(json を指定)：
-    >     {"file_name":"書き出したデータ.zip"}  
-    >      -> UUID とアップロード用 URL が返ってきます．
-    > 2.  署名付き url を使用して zip を送信  
-    >      Method：PUT  
-    >      URL：先ほど取得した URL  
-    >     Header：Content-Type:application/zip  
-    >     Body(binary を指定)：zip ファイルをアップロードする．  
-    >      -> アップロードが成功すれば 200 のステータスが返ってきます．
-    > 3.  解析処理を要求する  
-    >     Method：POST  
-    >      URL：http://localhost:5000/analysis  
-    >      Header：Content-Type: application/json
-    >     Body(json を指定)： {  
-    >     "UUID":"先ほど取得した UUID",  
-    >     "file_name":"書き出したデータ.zip",  
-    >     "habit":"x",  
-    >     "bed_answer":"y",  
-    >     "wake_answer":"z"  
-    >     }  
-    >     habit：夜更かししたかどうか(0or1)
-    >     bed_answer：アンケート回答(0~4)
-    >     wake_answer：アンケート回答(0~2)  
-    >     -> 解析結果などが返ってきます．
-    </details>
+<details>
+
+<summary>API 利用手順</summary>
+
+## 1. 署名付き URL を発行
+
+### HTTP リクエスト
+
+| 項目   | 内容                                         |
+| ------ | -------------------------------------------- |
+| Method | POST                                         |
+| URL    | `http://localhost:5000/get_presigned_url`    |
+| Header | `Content-Type: application/json`             |
+| Body   | [json]`{"file_name": "書き出したデータ.zip"} |
+
+### レスポンス
+
+- UUID とアップロード用の URL が返されます。
+
+---
+
+## 2. 署名付き URL を使用して ZIP を送信
+
+### HTTP リクエスト
+
+| 項目   | 内容                                 |
+| ------ | ------------------------------------ |
+| Method | PUT                                  |
+| URL    | 先ほど取得した URL                   |
+| Header | `Content-Type: application/zip`      |
+| Body   | [binary]ZIP ファイルのバイナリデータ |
+
+### レスポンス
+
+- アップロードが成功すれば、`200` ステータスが返されます。
+
+---
+
+## 3. 解析処理を要求する
+
+### HTTP リクエスト
+
+| 項目   | 内容                                 |
+| ------ | ------------------------------------ |
+| Method | POST                                 |
+| URL    | `http://localhost:5000/analysis`     |
+| Header | `Content-Type: application/json`     |
+| Body   | [json]                               |
+|        | `{                                   |
+|        | "UUID": "先ほど取得した UUID",       |
+|        | "file_name": "書き出したデータ.zip", |
+|        | "habit": "x",                        |
+|        | "bed_answer": "y",                   |
+|        | "wake_answer": "z"                   |
+|        | }`                                   |
+
+※リクエスト内容
+
+- `habit`: 夜更かししたかどうか (x：`0` or `1`)
+- `bed_answer`: アンケート回答 (y：`0〜4`)
+- `wake_answer`: アンケート回答 (z：`0〜2`)
+
+### レスポンス
+
+- 解析結果が返されます。
+
+---
+
+</details>
+     
+</details>
+
+## 🚚 ブランチの説明
+
+`develop`：以下のソースコードまとめてがアップロードされています．  
+`feature/#12_only_lambda_functions`：AWS Lambda に搭載するソースコード(署名付き URL の取得)がアップロードされています．  
+`feature/#13_only_ec2_functions`：AWS EC2 に搭載するソースコード(解析処理やフィードバック処理)がアップロードされています．
 
 ## 🚚 各種関数の説明
 
