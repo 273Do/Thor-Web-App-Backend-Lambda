@@ -75,7 +75,7 @@
 
 6. `docker exec -it thor_web_app_be /bin/bash`を実行してコンテナの中に入ってください．
 
-7.`aws configure`で aws cli の設定をしてください．
+7. `aws configure`で aws cli の設定をしてください．
 
 8. 以降はコンテナ内で python3 コマンドを実行していただけます．必要なライブラリは requirements.txt に記載されているものが自動でインストールされますが，必要なライブラリが無いとエラーが吐かれた場合は`pip3`で手動でインストールしてください．
 
@@ -84,11 +84,11 @@
 
 ## 🚚 API 利用手順
 
-> API の利用手順について記載しています．本番では`http://localhost:5000`ではなくエンドポイントを使用してください．
+> API の利用手順について記載しています．本番では`http://localhost:5000`ではなく正しいエンドポイントを使用してください．
 
 <details><summary>ローカル環境でのアプリの実行</summary>
 
-1.  HTTP リクエストのテストができるようなツールを導入してください．  
+1.  REST API のテストができるようなツールを導入してください．  
     VSCode の拡張機能版 Postman，Thunder Client などを入れるといいです．
 
 2.  アプリのリクエスト順序通りに API を叩いていきます．
@@ -117,12 +117,12 @@
 
 ### HTTP リクエスト
 
-| 項目   | 内容                                 |
-| ------ | ------------------------------------ |
-| Method | PUT                                  |
-| URL    | 先ほど取得した URL                   |
-| Header | `Content-Type: application/zip`      |
-| Body   | [binary]ZIP ファイルのバイナリデータ |
+| 項目   | 内容                            |
+| ------ | ------------------------------- |
+| Method | PUT                             |
+| URL    | 先ほど取得した URL              |
+| Header | `Content-Type: application/zip` |
+| Body   | [binary]ZIP ファイル            |
 
 ### レスポンス
 
@@ -172,6 +172,8 @@
 
 ## 🚚 各種関数の説明
 
-## 🚚 免責事項
+## 🚚 クレジット・免責事項
 
-この作成物および同梱物を使用したことによって生じたすべての障害・損害・不具合等に関しては，私と私の関係者および私の所属するいかなる団体・組織とも，一切の責任を負いません．各自の責任においてご使用ください．
+- 開発：273\*
+- This source code contains a partially modified version of [**applehealthdata**](https://github.com/tdda/applehealthdata) .
+- この作成物および同梱物を使用したことによって生じたすべての障害・損害・不具合等に関しては，私と私の関係者および私の所属するいかなる団体・組織とも，一切の責任を負いません．各自の責任においてご使用ください．
