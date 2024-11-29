@@ -30,7 +30,7 @@ DOCUMENT_ID = os.environ["DOCUMENT_ID"]
 # 解析結果を用いてChatGPTでフィードバックを生成する
 
 
-def generate_feedback(estimate_sleep_df, cluster_stats):
+def generate_feedback(analysis_results, cluster_stats):
 
     try:
         # Google Documentsからプロンプトを取得する
@@ -47,7 +47,7 @@ def generate_feedback(estimate_sleep_df, cluster_stats):
                     f"{user_prompt}"
                 )},
                 {"role": "user",
-                 "content": f"睡眠データ: {estimate_sleep_df}，歩数クラスタリングデータ: {cluster_stats}，フォーマット: {output_format}"}
+                 "content": f"睡眠データ: {analysis_results}，歩数クラスタリングデータ: {cluster_stats}，フォーマット: {output_format}"}
             ])
 
         # フィードバックを取得
