@@ -173,7 +173,9 @@
 
 実装した関数の解説を記載しています．
 
-### `./App.py`
+### `./`
+
+`App.py`
 
 <details><summary>API関連の関数をまとめたもの．</summary>
 
@@ -193,7 +195,9 @@
 
 <hr>
 
-### `./src/applehealthdata.py`
+### `./src`
+
+`applehealthdata.py`
 
 <details><summary>applehealthdataを一部改変したもの．</summary>
 
@@ -210,7 +214,7 @@ dfs = extractor.get_dataframes()
 
 </details>
 
-### `./src/extract_data.py`
+`extract_data.py`
 
 <details><summary>applehealthdataを用いてデータを抽出，加工する処理．</summary>
 
@@ -222,7 +226,7 @@ dfs = extractor.get_dataframes()
 
 </details>
 
-### `./src/open_api_functions.py`
+`open_api_functions.py`
 
 <details><summary>フィードバック生成関連の関数をまとめたもの．</summary>
 
@@ -241,7 +245,7 @@ dfs = extractor.get_dataframes()
 
 </details>
 
-### `./src/s3_functions.py`
+`s3_functions.py`
 
 <details><summary>S3関連の関数をまとめたもの．</summary>
 
@@ -265,7 +269,7 @@ dfs = extractor.get_dataframes()
 
 </details>
 
-### `./src/unzip.py`
+`unzip.py`
 
 <details><summary>zipファイルを解凍する処理．</summary>
 
@@ -279,7 +283,9 @@ dfs = extractor.get_dataframes()
 
 <hr>
 
-### `./src/analysis/auxiliary_functions.py`
+### `./src/analysis`
+
+`auxiliary_functions.py`
 
 <details><summary>補助関数をまとめたもの．</summary>
 
@@ -318,7 +324,7 @@ dfs = extractor.get_dataframes()
 
 </details>
 
-### `./src/analysis/main.py`
+`main.py`
 
 <details><summary>推定処理を行うメインの処理．</summary>
 
@@ -332,7 +338,7 @@ dfs = extractor.get_dataframes()
 
 </details>
 
-### `./src/analysis/set_ref_time.py`
+`set_ref_time.py`
 
 <details><summary>統計データから，睡眠行為率が i%~j%である時間範囲を取得する処理．</summary>
 
@@ -347,7 +353,9 @@ dfs = extractor.get_dataframes()
 
 <hr>
 
-### `./src/analysis/estimate/estimate.py`
+### `./src/analysis/estimate/`
+
+`estimate.py`
 
 <details><summary>歩数から睡眠を推定するメイン処理</summary>
 
@@ -360,7 +368,7 @@ dfs = extractor.get_dataframes()
 
 </details>
 
-### `./src/analysis/estimate/est_sleep_from_step.py`
+`est_sleep_from_step.py`
 
 <details><summary>推定処理を行う関数をまとめたもの．</summary>
 
@@ -392,7 +400,9 @@ dfs = extractor.get_dataframes()
 
 <hr>
 
-### `./src/analysis/ML/clustering.py`
+### `./src/analysis/ML`
+
+`clustering.py`
 
 <details><summary>歩数のクラスタリングを行う処理．</summary>
 
@@ -404,7 +414,7 @@ dfs = extractor.get_dataframes()
 
 </details>
 
-### `./src/analysis/ML/staying_up_late_model.py`
+`staying_up_late_model.py`
 
 <details><summary>機械学習(夜更かし検知)の処理に関する関数をまとめたもの．</summary>
 
@@ -424,7 +434,7 @@ dfs = extractor.get_dataframes()
 
 </details>
 
-### `./src/analysis/ML/models_functions.py`
+`models_functions.py`
 
 <details><summary>機械学習のモデルに関する関数をまとめたもの．使用していない．</summary>
 
