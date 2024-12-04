@@ -21,8 +21,8 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
     # 補正値の取得
     bed_cor, wake_cor = get_correction_value(bed_answer, wake_answer)
 
-    # 結果格納用の辞書
-    result = {}
+    # 結果格納用の配列
+    result = []
 
     # 1日毎に処理を繰り返す
     for i, date in enumerate(unique_dates):
@@ -73,13 +73,14 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
 
         # 結果が無い場合はNoneを設定，空でない場合は解析処理を実行
         if not sleep_detail:
-            result[date.strftime('%Y/%m/%d')] = {
+            result.append({
+                "date": date.strftime('%Y/%m/%d'),
                 "bed_time": None,
                 "wake_time": None,
                 "sleep_time": None,
                 "staying_up_late": None,
                 "data_count": 0
-            }
+            })
         else:
 
             # 補正処理
@@ -96,16 +97,15 @@ def estimate_sleep_from_step(df, staying_up_late_predictions_df, bed_answer, wak
                 sleep_time = convert_timedelta_to_time(
                     corrected_wake_time - corrected_bed_time)
 
-            # 結果を日付をkeyとしたオブジェクトに格納
-            result[date.strftime('%Y/%m/%d')] = {
+            # 結果を配列に格納
+            result.append({
+                "date": date.strftime('%Y/%m/%d'),
                 "bed_time": corrected_bed_time.time().strftime("%H:%M:%S"),
                 "wake_time": corrected_wake_time.time().strftime("%H:%M:%S"),
                 "sleep_time": sleep_time.strftime("%H:%M:%S"),
                 "staying_up_late": sleep_detail[2],
                 "data_count": sleep_detail[3]
-            }
-
-            # print(result[date.strftime('%Y/%m/%d')])
+            })
 
     return result
 
@@ -141,6 +141,7 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
     else:
         # 時間差の初期値
         tmp = timedelta()  # 初期値は0秒
+        result = []
 
         # その日の歩数データごとに処理を繰り返す
         for _, row in df.iterrows():
@@ -171,8 +172,10 @@ def staying_up_late_sleep_estimation(df, time_range, cluster_id):
                 break
 
         # 夜更かししているフラグと推定に使用したデータ数を格納
-        result += [True, len(df)]
-
+        if result:
+            result += [True, len(df)]
+        else:
+            result = []
         return result
 
 
@@ -215,4 +218,4 @@ def normal_sleep_estimation(df, time_range):
         # 夜更かししているフラグと推定に使用したデータ数を格納
         result = [bed_time, wake_time, False, len(df)]
 
-    return result
+        return result
