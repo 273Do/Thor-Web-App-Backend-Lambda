@@ -123,7 +123,7 @@ def analyze():
     return jsonify({"message": "successfully",
                     "body":
                         {
-                            "result": analysis_results,
+                            "results": analysis_results,
                             # "step_count_df": step_count_df,
                             "cluster_stats": cluster_stats,
                             "feedback": feedback,
