@@ -124,7 +124,7 @@ def analyze():
     print(feedback)
 
     return jsonify({"message": "successfully",
-                    "body":
+                    "body": json.dumps(
                         {
                             "results": analysis_results,
                             # "step_count_df": step_count_df,
@@ -132,4 +132,4 @@ def analyze():
                             "feedback": feedback,
                             # "UUID": UUID
                         }
-                    }), 200
+                    )}), 200
