@@ -7,5 +7,7 @@ __pycache__/
 
 .serverless
 
+statistical_data/
 test/
 models/
+service_account/

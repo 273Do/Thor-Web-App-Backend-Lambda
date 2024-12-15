@@ -2,10 +2,13 @@ from flask import Flask, jsonify, request
 import uuid
 import json
 from src.s3_functions import issue_presigned_url
+from flask_cors import CORS
 
 # FlaskのWebアプリ作成
 app = Flask(__name__)
 
+# CORSの設定をアプリ全体に適用
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 # 署名付きurlを発行するエンドポイント
 
