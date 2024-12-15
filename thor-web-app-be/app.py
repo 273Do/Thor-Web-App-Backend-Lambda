@@ -4,9 +4,13 @@ from src.unzip import unzip
 from src.extract_data import extract_data
 from src.analysis.main import data_analyze
 from src.open_api_functions import generate_feedback
+from flask_cors import CORS
 
 # FlaskのWebアプリ作成
 app = Flask(__name__)
+
+# CORSの設定をアプリ全体に適用
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 # 解析処理をするエンドポイント
 

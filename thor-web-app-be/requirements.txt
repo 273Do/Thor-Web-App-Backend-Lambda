@@ -1,8 +1,7 @@
 Flask==3.0.3
 boto3
 botocore
-# pandas
-# scikit-learn
+flask-cors
 
 python-dotenv
 python-dateutil
