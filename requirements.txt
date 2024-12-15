@@ -4,6 +4,12 @@ botocore
 pandas
 scikit-learn
 flask-cors
+openai
 
 python-dotenv
 python-dateutil
+
+google-api-python-client
+google-auth
+google-auth-oauthlib
+google-auth-httplib2

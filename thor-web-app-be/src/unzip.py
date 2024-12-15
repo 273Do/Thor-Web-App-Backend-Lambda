@@ -12,7 +12,7 @@ def unzip(zip_file):
 
             # apple_health_export/export.xmlが含まれているか確認
             for file_name in file_list:
-                if 'apple_health_export/export.xml' in file_name:
+                if "apple_health_export/export.xml" in file_name:
 
                     # export.xmlを取得
                     export_xml = z.read(file_name)
