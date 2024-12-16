@@ -8,12 +8,18 @@ from src.extract_data import extract_data
 from src.analysis.main import data_analyze
 from src.open_api_functions import generate_feedback
 from flask_cors import CORS
+from dotenv import load_dotenv
+
+# envファイルの読み込み
+load_dotenv()
+# フロントエンドのURLを取得
+FRONTEND_URL = os.environ["FRONTEND_URL"]
 
 # FlaskのWebアプリ作成
 app = Flask(__name__)
 
 # CORSの設定をアプリ全体に適用
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/*": {"origins": FRONTEND_URL}})
 
 # 署名付きurlを発行するエンドポイント
 
@@ -124,7 +130,7 @@ def analyze():
     print(feedback)
 
     return jsonify({"message": "successfully",
-                    "body":
+                    "body": json.dumps(
                         {
                             "results": analysis_results,
                             # "step_count_df": step_count_df,
@@ -132,4 +138,4 @@ def analyze():
                             "feedback": feedback,
                             # "UUID": UUID
                         }
-                    }), 200
+                    )}), 200
