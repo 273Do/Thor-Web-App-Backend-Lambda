@@ -1,14 +1,21 @@
 from flask import Flask, jsonify, request
+import os
 import uuid
 import json
 from src.s3_functions import issue_presigned_url
 from flask_cors import CORS
+from dotenv import load_dotenv
+
+# envファイルの読み込み
+load_dotenv()
+# フロントエンドのURLを取得
+FRONTEND_URL = os.environ["FRONTEND_URL"]
 
 # FlaskのWebアプリ作成
 app = Flask(__name__)
 
 # CORSの設定をアプリ全体に適用
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/*": {"origins": FRONTEND_URL}})
 
 # 署名付きurlを発行するエンドポイント
 
